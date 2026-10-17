@@ -1,0 +1,103 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-obsidian: #07090E;
+  --surface-elevated: #0D1119;
+  --accent-gold: #D4AF37;
+  --felt-night: #0E1726;
+  --felt-day: #092218;
+  --felt-vote: #260B12;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  height: 100%;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--bg-obsidian);
+  color: #E5E0D8;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Custom Gold Foil Border Utilities */
+.gold-border {
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FFF3B0 0%, #D4AF37 50%, #AA8012 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.crimson-gradient-text {
+  background: linear-gradient(135deg, #FFAAA6 0%, #DC2626 50%, #7F1D1D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 3D Flip Card Styles */
+.perspective-1000 {
+  perspective: 1000px;
+}
+
+.transform-style-3d {
+  transform-style: preserve-3d;
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Modern Velvet Table Surface */
+.felt-surface-day {
+  background: radial-gradient(ellipse at center, #132a23 0%, #091412 75%, #050a09 100%);
+}
+
+.felt-surface-night {
+  background: radial-gradient(ellipse at center, #131b2e 0%, #090d17 75%, #05070d 100%);
+}
+
+.felt-surface-vote {
+  background: radial-gradient(ellipse at center, #2e1117 0%, #17070a 75%, #0d0305 100%);
+}
+
+/* Clean Matte Obsidian Card Back */
+.tarot-back-pattern {
+  background-color: #0B0E14;
+  background-image: 
+    linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%),
+    radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
+}
+
+/* Custom Minimal Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(212, 175, 55, 0.6);
+}

@@ -1,0 +1,170 @@
+import React, { useState, useRef, useEffect } from 'react';
+import type { ChatMessage, ChatChannel, Phase, Role } from '../types/game';
+import { Send, Moon, Radio } from 'lucide-react';
+
+interface ChatDockProps {
+  messages: ChatMessage[];
+  myRole?: Role;
+  mySeatNumber?: number;
+  isAlive: boolean;
+  phase: Phase;
+  onSendMessage: (text: string, channel: ChatChannel) => void;
+}
+
+export const ChatDock: React.FC<ChatDockProps> = ({
+  messages,
+  myRole,
+  mySeatNumber,
+  isAlive,
+  phase,
+  onSendMessage
+}) => {
+  const [inputText, setInputText] = useState('');
+  const chatScrollRef = useRef<HTMLDivElement>(null);
+
+  const isMafia = myRole === 'don' || myRole === 'mafia';
+  const isNight = phase === 'night';
+  const isNightCitizen = isNight && !isMafia && isAlive;
+
+  // Auto scroll to bottom on new messages
+  useEffect(() => {
+    if (chatScrollRef.current) {
+      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+    }
+  }, [messages]);
+
+  const handleSend = () => {
+    if (!inputText.trim()) return;
+    const channel: ChatChannel = (isNight && isMafia) ? 'syndicate' : (!isAlive ? 'ghost' : 'public');
+    onSendMessage(inputText.trim(), channel);
+    setInputText('');
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  // Filter messages for current view
+  const displayMessages = messages.filter((m) => {
+    if (m.channel === 'system' || m.channel === 'public') return true;
+    if (m.channel === 'syndicate') return isMafia;
+    if (m.channel === 'ghost') return !isAlive || phase === 'game_over';
+    return true;
+  });
+
+  return (
+    <div className="relative w-full h-[38dvh] bg-[#07090E]/95 border-t border-white/10 flex flex-col justify-between backdrop-blur-xl z-20">
+      
+      {/* Night Mafia Badge if active */}
+      {isNight && isMafia && isAlive && (
+        <div className="w-full px-3 py-1 bg-red-950/60 border-b border-red-900/40 flex items-center justify-center gap-1.5 text-[11px] text-red-300 font-medium">
+          <Radio className="w-3.5 h-3.5 text-red-400 animate-pulse" />
+          <span>🔴 Зашифрованный ночной канал Мафии</span>
+        </div>
+      )}
+
+      {/* ================= Messages Log (Telegram-style clean scroll) ================= */}
+      <div
+        ref={chatScrollRef}
+        className="flex-1 w-full p-3 overflow-y-auto space-y-2 font-sans text-xs select-text no-scrollbar"
+      >
+        {isNightCitizen ? (
+          <div className="h-full flex flex-col items-center justify-center text-center p-4">
+            <Moon className="w-8 h-8 text-indigo-400 mb-2 animate-pulse" />
+            <p className="font-serif text-sm font-bold text-indigo-200">Город спит...</p>
+            <p className="text-[11px] text-[#A0AEC0] max-w-[240px] mt-1">
+              Мирные жители не могут общаться до рассвета.
+            </p>
+          </div>
+        ) : displayMessages.length === 0 ? (
+          <div className="h-full flex items-center justify-center text-gray-500 text-xs italic">
+            Чат пуст. Напишите первое сообщение...
+          </div>
+        ) : (
+          displayMessages.map((m) => {
+            if (m.is_system) {
+              return (
+                <div key={m.id} className="py-1 px-3 rounded-lg bg-black/40 border border-[#D4AF37]/20 text-center mx-auto max-w-[90%]">
+                  <span className="font-serif text-[11px] text-[#D4AF37] font-semibold">
+                    {m.text}
+                  </span>
+                </div>
+              );
+            }
+
+            const isMyMsg = m.sender_seat === mySeatNumber;
+            const isSyndicateMsg = m.channel === 'syndicate';
+
+            return (
+              <div
+                key={m.id}
+                className={`flex flex-col ${isMyMsg ? 'items-end' : 'items-start'}`}
+              >
+                <div className="flex items-center gap-1.5 mb-0.5 px-1">
+                  <span className="font-mono text-[9px] font-bold text-[#D4AF37]">
+                    #{m.sender_seat}
+                  </span>
+                  <span className="text-[10px] font-semibold text-gray-400">
+                    {m.sender_name}
+                  </span>
+                  {isSyndicateMsg && (
+                    <span className="text-[8px] font-mono text-red-400 bg-red-950 px-1 rounded">
+                      МАФИЯ
+                    </span>
+                  )}
+                </div>
+
+                <div
+                  className={`max-w-[85%] px-3 py-1.5 rounded-2xl break-words text-[11px] leading-relaxed shadow-sm ${
+                    isMyMsg
+                      ? isSyndicateMsg
+                        ? 'bg-red-800 text-white rounded-tr-none'
+                        : 'bg-[#D4AF37] text-black font-semibold rounded-tr-none'
+                      : isSyndicateMsg
+                      ? 'bg-red-950/90 border border-red-800/60 text-red-100 rounded-tl-none'
+                      : 'bg-[#141A26] border border-white/10 text-[#E5E0D8] rounded-tl-none'
+                  }`}
+                >
+                  {m.text}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* ================= Input Field (Distraction-Free) ================= */}
+      <div className="w-full p-2.5 bg-[#0A0E17] border-t border-white/5 flex items-center gap-2">
+        <input
+          type="text"
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          onKeyDown={handleKeyDown}
+          disabled={isNightCitizen || (!isAlive && phase !== 'last_word')}
+          placeholder={
+            isNightCitizen
+              ? "🌙 Город спит..."
+              : isNight && isMafia
+              ? "🔴 Сообщение для Мафии..."
+              : !isAlive
+              ? "👻 Чат призраков..."
+              : "Написать в чат..."
+          }
+          className="flex-1 bg-[#121824] border border-white/10 focus:border-[#D4AF37] rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 outline-none transition-all disabled:opacity-40"
+        />
+
+        <button
+          type="button"
+          onClick={handleSend}
+          disabled={isNightCitizen || !inputText.trim() || (!isAlive && phase !== 'last_word')}
+          className="w-9 h-9 rounded-xl bg-[#D4AF37] hover:bg-[#FFF3B0] text-black flex items-center justify-center transition-all active:scale-95 disabled:opacity-30 shadow-sm"
+        >
+          <Send className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};
