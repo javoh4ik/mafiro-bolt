@@ -1,32 +1,38 @@
-# React + TypeScript + Vite
+# 🎩 MAFIRO — Online Mafia (Bolt.new Edition)
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+A bespoke, dark-luxury psychological multiplayer Mafia game built with **React 19**, **TypeScript**, and **Tailwind CSS**.
 
-Currently, two official plugins are available:
+[![Open in Bolt.new](https://bolt.new/badge.svg)](https://bolt.new/~/github.com/javoh4ik/mafiro-bolt)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **🎮 Seamless Client-Side Game Engine**: Zero-mock browser engine using `localStorage` and `BroadcastChannel('mafiro_sync')`. Play directly in browser previews or across multiple browser tabs without requiring a Python backend.
+- **🔌 Automatic Backend Reconnect**: Transparently connects to FastAPI WebSockets when available, with automatic fallback when offline or in browser-only environments.
+- **🃏 Hold-to-Peek 3D Secret Role Card**: Screen-peeking protection with smooth 3D card-flip animations.
+- **🏛️ Modern Velvet Table**: Clean geometric coordinate layout supporting 4 to 12 seats with rich emerald felt gradients and wooden bronze rims.
+- **💬 Telegram-Style Mafia Chat**: Dedicated Syndicate Night chat for Don & Mafia, court debates, and real-time voting.
+- **✨ Complete Mafia State Machine**: Lobby ➔ Night ➔ Day ➔ Vote ➔ Game Over cycles.
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## 🚀 Quick Start
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+---
+
+## 🌐 Instant Bolt.new Launch
+
+Click the badge above or navigate to:
+**https://bolt.new/~/github.com/javoh4ik/mafiro-bolt**
