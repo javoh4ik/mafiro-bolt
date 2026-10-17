@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { ThrowableEvent, ThrowableItem } from '../types/game';
-import { sounds } from '../utils/sounds';
 
 interface ThrowablesOverlayProps {
   lastThrowable?: ThrowableEvent;
@@ -46,7 +45,6 @@ export const ThrowablesOverlay: React.FC<ThrowablesOverlayProps> = ({
     const timer = setTimeout(() => {
       setAnimatingItem(null);
       setSplatAt({ x: toCoord.x, y: toCoord.y, item: lastThrowable.item });
-      sounds.playSplat();
 
       // Clear splat after 1.2s
       setTimeout(() => {

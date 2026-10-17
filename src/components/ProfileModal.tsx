@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { UserProfile } from '../types/game';
-import { X, Trophy, User, Shield, Check } from 'lucide-react';
-import { sounds } from '../utils/sounds';
+import { X, User, Check } from 'lucide-react';
+import { getAvatarGradient, getInitials } from '../utils/avatar';
 
 interface ProfileModalProps {
   isOpen: boolean;
@@ -10,8 +10,6 @@ interface ProfileModalProps {
   onUpdateUser: (updated: Partial<UserProfile>) => void;
 }
 
-const AVATAR_SEEDS = ['boss', 'detective', 'lady', 'gentleman', 'shadow', 'sheriff', 'don'];
-
 export const ProfileModal: React.FC<ProfileModalProps> = ({
   isOpen,
   onClose,
@@ -19,18 +17,17 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   onUpdateUser
 }) => {
   const [name, setName] = useState(user.first_name);
-  const [selectedSeed, setSelectedSeed] = useState(user.username || 'boss');
   const [savedToast, setSavedToast] = useState(false);
 
   if (!isOpen) return null;
 
+  const gradient = getAvatarGradient(name.trim() || user.first_name || user.id);
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    sounds.playCoin();
     onUpdateUser({
       first_name: name.trim() || 'Игрок',
-      username: selectedSeed,
-      avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${selectedSeed}`
+      avatar_url: undefined
     });
     setSavedToast(true);
     setTimeout(() => {
@@ -46,7 +43,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in select-none">
       <div className="w-full max-w-[360px] rounded-3xl bg-[#0A0E17] border border-[#FF2A55]/40 shadow-2xl p-5 flex flex-col gap-4 text-white">
-        
+
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 pb-3">
           <div className="flex items-center gap-2">
@@ -64,36 +61,22 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
           </button>
         </div>
 
-        {/* Avatar & Pickers */}
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-20 h-20 rounded-full border-2 border-[#FF2A55] p-1 bg-[#121A2A] shadow-gold-glow">
-            <img
-              src={`https://api.dicebear.com/7.x/bottts/svg?seed=${selectedSeed}`}
-              alt="Avatar"
-              className="w-full h-full rounded-full object-cover bg-[#05070B]"
-            />
+        {/* Gradient initials avatar preview */}
+        <div className="flex flex-col items-center gap-2">
+          <div
+            className="w-20 h-20 rounded-full flex items-center justify-center ring-2 ring-white/20"
+            style={{
+              background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
+              boxShadow: `0 0 16px ${gradient.glow}`,
+            }}
+          >
+            <span className="text-xl font-bold text-white tracking-wide drop-shadow">
+              {getInitials(name.trim() || user.first_name)}
+            </span>
           </div>
-
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1">
-            {AVATAR_SEEDS.map((seed) => (
-              <button
-                key={seed}
-                type="button"
-                onClick={() => setSelectedSeed(seed)}
-                className={`w-8 h-8 rounded-full border p-0.5 transition-all ${
-                  selectedSeed === seed
-                    ? 'border-[#FF2A55] scale-110 shadow-gold-glow'
-                    : 'border-white/20 opacity-60 hover:opacity-100'
-                }`}
-              >
-                <img
-                  src={`https://api.dicebear.com/7.x/bottts/svg?seed=${seed}`}
-                  alt={seed}
-                  className="w-full h-full rounded-full object-cover"
-                />
-              </button>
-            ))}
-          </div>
+          <p className="text-[10px] text-gray-400 font-mono">
+            Аватар строится из вашего имени автоматически
+          </p>
         </div>
 
         {/* Stats Grid */}

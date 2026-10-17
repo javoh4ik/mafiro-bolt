@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ChatMessage, ChatChannel, Phase, Role } from '../types/game';
 import { Send, Moon, Radio } from 'lucide-react';
+import { getAvatarGradient } from '../utils/avatar';
 
 interface ChatDockProps {
   messages: ChatMessage[];
@@ -29,7 +30,7 @@ export const ChatDock: React.FC<ChatDockProps> = ({
   // Auto scroll to bottom on new messages
   useEffect(() => {
     if (chatScrollRef.current) {
-      chatScrollRef.current.scrollTop = chatScrollRef.current.scrollHeight;
+      chatScrollRef.current.scrollTo({ top: chatScrollRef.current.scrollHeight, behavior: 'smooth' });
     }
   }, [messages]);
 
@@ -41,23 +42,46 @@ export const ChatDock: React.FC<ChatDockProps> = ({
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   };
 
-  // Filter messages for current view
+  // Only real player messages + minimal system phase dividers. No join/leave/seat spam.
   const displayMessages = messages.filter((m) => {
-    if (m.channel === 'system' || m.channel === 'public') return true;
+    if (!m.is_system && (!m.text || !m.text.trim())) return false;
     if (m.channel === 'syndicate') return isMafia;
     if (m.channel === 'ghost') return !isAlive || phase === 'game_over';
-    return true;
+    return m.channel === 'public' || m.channel === 'system' || m.is_system;
   });
+
+  // Minimal system metadata that survives as muted dividers (phase transitions only)
+  const isPhaseDivider = (text: string): boolean => {
+    const t = text.toLowerCase();
+    const isSeatSpam =
+      t.includes('занял место') ||
+      t.includes('покинул стол') ||
+      t.includes('пересел') ||
+      t.includes('бросает');
+    const isPhaseMeta =
+      t.includes('игра началась') ||
+      t.includes('карты сданы') ||
+      t.includes('наступает ночь') ||
+      t.includes('город просыпается') ||
+      t.includes('время голосования') ||
+      t.includes('раунд заверш') ||
+      t.includes('убит') ||
+      t.includes('исключен') ||
+      t.includes('никто не был казнен') ||
+      t.includes('никто не погиб') ||
+      t.includes('победа');
+    return !isSeatSpam && (isPhaseMeta || text.length < 1);
+  };
 
   return (
     <div className="relative w-full h-[38dvh] bg-[#05070B]/95 border-t border-white/10 flex flex-col justify-between backdrop-blur-xl z-20">
-      
+
       {/* Night Mafia Badge if active */}
       {isNight && isMafia && isAlive && (
         <div className="w-full px-3 py-1 bg-red-950/60 border-b border-red-900/40 flex items-center justify-center gap-1.5 text-[11px] text-red-300 font-medium">
@@ -69,7 +93,7 @@ export const ChatDock: React.FC<ChatDockProps> = ({
       {/* ================= Messages Log (Telegram-style clean scroll) ================= */}
       <div
         ref={chatScrollRef}
-        className="flex-1 w-full p-3 overflow-y-auto space-y-2 font-sans text-xs select-text no-scrollbar"
+        className="flex-1 w-full p-3 overflow-y-auto space-y-1.5 font-sans text-xs select-text no-scrollbar scroll-smooth"
       >
         {isNightCitizen ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-4">
@@ -85,10 +109,12 @@ export const ChatDock: React.FC<ChatDockProps> = ({
           </div>
         ) : (
           displayMessages.map((m) => {
+            // Minimal system metadata: centered muted divider (phase transitions only)
             if (m.is_system) {
+              if (!isPhaseDivider(m.text)) return null;
               return (
-                <div key={m.id} className="py-1 px-3 rounded-lg bg-black/40 border border-[#FF2A55]/20 text-center mx-auto max-w-[90%]">
-                  <span className="font-serif text-[11px] text-[#FF2A55] font-semibold">
+                <div key={m.id} className="py-1 text-center">
+                  <span className="text-white/30 text-xs">
                     {m.text}
                   </span>
                 </div>
@@ -97,35 +123,47 @@ export const ChatDock: React.FC<ChatDockProps> = ({
 
             const isMyMsg = m.sender_seat === mySeatNumber;
             const isSyndicateMsg = m.channel === 'syndicate';
+            const gradient = getAvatarGradient(m.sender_name || m.sender_id);
 
             return (
               <div
                 key={m.id}
                 className={`flex flex-col animate-message-in ${isMyMsg ? 'items-end' : 'items-start'}`}
               >
-                <div className="flex items-center gap-1.5 mb-0.5 px-1">
-                  <span className="font-mono text-[9px] font-bold text-[#FF2A55]">
-                    #{m.sender_seat}
-                  </span>
-                  <span className="text-[10px] font-semibold text-gray-400">
-                    {m.sender_name}
-                  </span>
-                  {isSyndicateMsg && (
-                    <span className="text-[8px] font-mono text-red-400 bg-red-950 px-1 rounded">
-                      МАФИЯ
+                {!isMyMsg && (
+                  <div className="flex items-center gap-1.5 mb-0.5 px-1">
+                    <span
+                      className="font-mono text-[9px] font-bold px-1 rounded"
+                      style={{
+                        color: gradient.from,
+                        backgroundColor: 'rgba(255,255,255,0.05)',
+                      }}
+                    >
+                      #{m.sender_seat}
                     </span>
-                  )}
-                </div>
+                    <span className="text-[10px] font-semibold" style={{ color: gradient.from }}>
+                      {m.sender_name}
+                    </span>
+                    {isSyndicateMsg && (
+                      <span className="text-[8px] font-mono text-red-400 bg-red-950 px-1 rounded">
+                        МАФИЯ
+                      </span>
+                    )}
+                    <span className="text-[9px] text-white/30">
+                      {new Date(m.timestamp * 1000).toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                )}
 
                 <div
                   className={`max-w-[85%] px-3 py-1.5 rounded-2xl break-words text-[11px] leading-relaxed shadow-sm ${
                     isMyMsg
                       ? isSyndicateMsg
                         ? 'bg-red-800 text-white rounded-tr-none'
-                        : 'bg-[#FF2A55] text-white font-semibold rounded-tr-none'
+                        : 'bg-blue-600/70 text-white rounded-br-sm'
                       : isSyndicateMsg
                       ? 'bg-red-950/90 border border-red-800/60 text-red-100 rounded-tl-none'
-                      : 'bg-[#121A2A] border border-white/10 text-[#E5E0D8] rounded-tl-none'
+                      : 'bg-white/10 text-white/90 rounded-bl-sm'
                   }`}
                 >
                   {m.text}
@@ -136,8 +174,8 @@ export const ChatDock: React.FC<ChatDockProps> = ({
         )}
       </div>
 
-      {/* ================= Input Field (Distraction-Free) ================= */}
-      <div className="w-full p-2.5 bg-[#0A0E17] border-t border-white/5 flex items-center gap-2">
+      {/* ================= Input Field (Pinned bottom) ================= */}
+      <div className="w-full p-2.5 bg-[#05070B] border-t border-white/5 flex items-center gap-2">
         <input
           type="text"
           value={inputText}
@@ -153,14 +191,14 @@ export const ChatDock: React.FC<ChatDockProps> = ({
               ? "👻 Чат призраков..."
               : "Написать в чат..."
           }
-          className="flex-1 bg-[#0F1522] border border-white/10 focus:border-[#FF2A55] rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 outline-none transition-all disabled:opacity-40"
+          className="flex-1 bg-white/10 border border-white/15 focus:border-white/30 rounded-xl px-4 py-2.5 text-xs text-white placeholder-white/30 outline-none transition-all disabled:opacity-40"
         />
 
         <button
           type="button"
           onClick={handleSend}
           disabled={isNightCitizen || !inputText.trim() || (!isAlive && phase !== 'last_word')}
-          className="w-9 h-9 rounded-xl bg-[#FF2A55] hover:bg-[#FF8FA5] text-white flex items-center justify-center transition-all active:scale-95 disabled:opacity-30 shadow-sm"
+          className="bg-blue-600 hover:bg-blue-500 rounded-xl px-4 py-2.5 text-white flex items-center justify-center transition-colors active:scale-95 disabled:opacity-30"
         >
           <Send className="w-4 h-4" />
         </button>

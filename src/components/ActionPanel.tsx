@@ -1,7 +1,6 @@
 import React from 'react';
 import type { Phase, Role, PublicPlayer } from '../types/game';
 import { Crosshair, Shield, Search, Heart, UserX, Check, X } from 'lucide-react';
-import { sounds } from '../utils/sounds';
 
 interface ActionPanelProps {
   phase: Phase;
@@ -53,10 +52,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
           {targetPlayer && (
             <button
               type="button"
-              onClick={() => {
-                sounds.playGavel();
-                onConfirmAction();
-              }}
+              onClick={onConfirmAction}
               className="px-3 py-1 rounded-lg bg-red-600 hover:bg-red-500 text-white font-serif font-bold text-xs uppercase tracking-wider flex items-center gap-1 shadow-crimson-glow active:scale-95"
             >
               <Check className="w-3.5 h-3.5" /> Подтвердить
@@ -113,14 +109,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
 
             <button
               type="button"
-              onClick={() => {
-                if (myRole === 'mafia' || myRole === 'don' || myRole === 'maniac') {
-                  sounds.playShot();
-                } else {
-                  sounds.playCoin();
-                }
-                onConfirmAction();
-              }}
+              onClick={onConfirmAction}
               className={`px-3 py-1 rounded-lg font-serif font-bold text-xs uppercase tracking-wider flex items-center gap-1 active:scale-95 transition-all ${btnColor}`}
             >
               {actionIcon} {actionTitle}

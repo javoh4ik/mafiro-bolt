@@ -1,9 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import type { PublicPlayer, Phase, TargetVector } from '../types/game';
 import { PlayerSeat } from './PlayerSeat';
 import { TargetLines } from './TargetLines';
-import { Moon, Sun, Scale, Skull, Clock, Users, Share2, Play, Check } from 'lucide-react';
-import { sounds } from '../utils/sounds';
+import { Moon, Sun, Scale, Skull, Clock, Users, Link2, Play, Check } from 'lucide-react';
 
 interface OvalTableProps {
   players: PublicPlayer[];
@@ -18,10 +17,13 @@ interface OvalTableProps {
   selectedTargetSeat?: number;
   canTarget: boolean;
   onSelectTarget: (seatNumber: number) => void;
+  onReseat: (seatNumber: number) => void;
   recentMessages?: Array<{ sender_seat: number; text: string }>;
   onStartGame?: () => void;
   isHost?: boolean;
 }
+
+const BOT_USERNAME = import.meta.env.VITE_BOT_USERNAME || 'your_bot';
 
 export const OvalTable: React.FC<OvalTableProps> = ({
   players,
@@ -36,17 +38,17 @@ export const OvalTable: React.FC<OvalTableProps> = ({
   selectedTargetSeat,
   canTarget,
   onSelectTarget,
+  onReseat,
   recentMessages = [],
   onStartGame,
   isHost = true
 }) => {
   const [copiedLink, setCopiedLink] = useState(false);
+  const [reseatToast, setReseatToast] = useState<string | null>(null);
   const totalSeats = Math.max(maxPlayers || 8, players.length, 4);
 
-  // Compute Trigonometric Polar Coordinates around Ellipse (rx = 41%, ry = 40%)
-  // Center is at (50%, 50%)
-  // Current player perspective: anchor mySeat at bottom (90 deg / π/2 rad)
-  // Remaining seats distributed evenly: angle = 90 + (relative_index * 360 / N)
+  // Precise ellipse seat layout: angle = 2π/N * i - π/2, rx=42%, ry=38%.
+  // Anchored so MY seat sits at the bottom center (angle offset preserves circular order).
   const { seatCoordinates, playerMap } = useMemo(() => {
     const coords: Record<number, { x: number; y: number }> = {};
     const map: Record<number, PublicPlayer> = {};
@@ -55,16 +57,16 @@ export const OvalTable: React.FC<OvalTableProps> = ({
       map[p.seat_number] = p;
     });
 
-    const rx = 41; // Horizontal radius %
-    const ry = 40; // Vertical radius %
+    const radiusX = 42;
+    const radiusY = 38;
 
-    for (let seat = 1; seat <= totalSeats; seat++) {
+    for (let i = 0; i < totalSeats; i++) {
+      const seat = i + 1;
       const relIdx = (seat - mySeatNumber + totalSeats) % totalSeats;
-      const angleDeg = 90 + (relIdx * 360) / totalSeats;
-      const angleRad = (angleDeg * Math.PI) / 180;
+      const angle = (2 * Math.PI * relIdx) / totalSeats - Math.PI / 2;
 
-      const x = 50 + rx * Math.cos(angleRad);
-      const y = 50 + ry * Math.sin(angleRad);
+      const x = 50 + radiusX * Math.cos(angle);
+      const y = 50 + radiusY * Math.sin(angle);
 
       coords[seat] = {
         x: Math.round(x * 10) / 10,
@@ -75,18 +77,55 @@ export const OvalTable: React.FC<OvalTableProps> = ({
     return { seatCoordinates: coords, playerMap: map };
   }, [players, mySeatNumber, totalSeats]);
 
+  const canReseat = phase === 'lobby';
+
+  const handleSeatClick = useCallback((seatNumber: number) => {
+    if (phase !== 'lobby') return;
+    onReseat(seatNumber);
+    setReseatToast(`Вы пересели на место #${seatNumber}`);
+    setTimeout(() => setReseatToast(null), 2000);
+  }, [phase, onReseat]);
+
+  const handleInvite = async () => {
+    const inviteUrl = `https://t.me/${BOT_USERNAME}?startapp=${roomId}`;
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+    } catch {}
+
+    const tg = (window as any).Telegram?.WebApp;
+    if (tg?.openTelegramLink) {
+      try {
+        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent('Присоединяйся к игре в MAFIRO!')}`);
+      } catch {}
+    }
+
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2500);
+  };
+
   // Felt background class according to phase
   const feltBgClass = useMemo(() => {
     switch (phase) {
       case 'night':
-        return 'felt-surface-night border-[#1e293b] shadow-[inset_0_0_80px_rgba(3,7,18,0.9)]';
+        return 'bg-gradient-to-br from-[#0B1226] via-[#0E1726] to-[#0B1226]';
       case 'day':
-        return 'felt-surface-day border-[#133F2E] shadow-[inset_0_0_80px_rgba(2,20,10,0.9)]';
       case 'vote':
       case 'last_word':
-        return 'felt-surface-vote border-[#4A1521] shadow-[inset_0_0_80px_rgba(30,3,8,0.9)]';
+        return 'bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-950';
       default:
-        return 'felt-surface-day border-[#1b3a30] shadow-[inset_0_0_70px_rgba(2,20,10,0.85)]';
+        return 'bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-950';
+    }
+  }, [phase]);
+
+  const feltGlow = useMemo(() => {
+    switch (phase) {
+      case 'night':
+        return '0 0 40px 8px rgba(99, 102, 241, 0.25)';
+      case 'vote':
+      case 'last_word':
+        return '0 0 40px 8px rgba(220, 38, 38, 0.35)';
+      default:
+        return '0 0 40px 8px rgba(220, 38, 38, 0.35)';
     }
   }, [phase]);
 
@@ -153,35 +192,29 @@ export const OvalTable: React.FC<OvalTableProps> = ({
     return map;
   }, [recentMessages]);
 
-  const handleShareLink = () => {
-    sounds.playCoin();
-    const shareUrl = roomId ? `${window.location.origin}?startapp=${roomId}` : window.location.href;
-    const tg = (window as any).Telegram?.WebApp;
-    if (tg?.openTelegramLink) {
-      tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent('Присоединяйся к игре в MAFIRO!')}`);
-    } else if (navigator.clipboard) {
-      navigator.clipboard.writeText(shareUrl);
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2000);
-    }
-  };
-
   return (
-    <div className="relative w-full h-[54dvh] min-h-[390px] max-h-[500px] flex items-center justify-center p-2 select-none">
-      {/* Outer Modern Obsidian Rim with crimson ambient edge lighting */}
-      <div className="relative w-full h-full rounded-[140px] p-2.5 bg-gradient-to-b from-[#0D1119] to-[#05070B] border-2 border-[#FF2A55]/30 shadow-[0_0_45px_rgba(255,42,85,0.18),0_18px_40px_rgba(0,0,0,0.7)] flex items-center justify-center">
-        
+    <div className="relative w-full flex-1 min-h-0 flex items-center justify-center p-2 select-none overflow-hidden">
+      {/* Outer obsidian rim */}
+      <div
+        className="relative w-full h-full rounded-[80px] p-2 bg-[#05070B] border-2 border-red-900/60 flex items-center justify-center overflow-hidden"
+        style={{ boxShadow: feltGlow }}
+      >
         {/* Table Felt Surface */}
-        <div className={`relative w-full h-full rounded-[125px] transition-colors duration-700 border flex items-center justify-center overflow-visible ${feltBgClass}`}>
-          
-          {/* Decorative Inner Ring */}
-          <div className="absolute inset-4 rounded-[105px] border border-white/[0.08] pointer-events-none" />
-          {/* Crimson ambient edge glow inside the felt */}
-          <div className="absolute inset-0 rounded-[125px] shadow-[inset_0_0_60px_rgba(255,42,85,0.12)] pointer-events-none" />
+        <div className={`relative w-full h-full rounded-[72px] transition-colors duration-700 flex items-center justify-center overflow-visible ${feltBgClass}`}>
+          {/* Inner felt highlight */}
+          <div
+            className="absolute inset-0 rounded-[72px] pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at center, rgba(255,255,255,0.04) 0%, transparent 70%)' }}
+          />
+          {/* Elegant table label */}
+          <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
+            <span className="font-serif text-[11px] tracking-[0.3em] uppercase text-amber-400/60">
+              MAFIRO CLUB
+            </span>
+          </div>
 
           {/* Table Center Info & Minimalist Lobby Controls */}
           <div className="relative z-10 flex flex-col items-center justify-center px-4 py-2 text-center">
-            
             {/* Phase Badge */}
             <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05070B]/90 border backdrop-blur-md shadow-md mb-1 ${phaseInfo.badgeBorder}`}>
               {phaseInfo.icon}
@@ -190,7 +223,7 @@ export const OvalTable: React.FC<OvalTableProps> = ({
               </span>
             </div>
 
-            {/* JetBrains Mono Tabular Countdown Timer during Match */}
+            {/* Countdown Timer during Match */}
             {phase !== 'lobby' && phase !== 'game_over' && (
               <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-lg bg-black/60 border border-white/10 shadow-inner">
                 <Clock className="w-3.5 h-3.5 text-[#FF2A55]" />
@@ -216,11 +249,11 @@ export const OvalTable: React.FC<OvalTableProps> = ({
                   {/* Invite Friends Button */}
                   <button
                     type="button"
-                    onClick={handleShareLink}
-                    className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-serif font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+                    onClick={handleInvite}
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg transition-all duration-200 active:scale-95"
                   >
-                    {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-[#FF2A55]" />}
-                    <span>{copiedLink ? 'Ссылка скопирована' : 'Пригласить'}</span>
+                    {copiedLink ? <Check className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
+                    <span>{copiedLink ? 'Скопировано!' : 'Пригласить'}</span>
                   </button>
 
                   {/* Start Match Button */}
@@ -228,9 +261,9 @@ export const OvalTable: React.FC<OvalTableProps> = ({
                     type="button"
                     onClick={onStartGame}
                     disabled={players.length < 4}
-                    className={`px-4 py-1.5 rounded-xl font-serif font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-gold-glow active:scale-95 transition-all ${
+                    className={`px-4 py-2.5 rounded-xl font-serif font-black text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all active:scale-95 ${
                       players.length >= 4
-                        ? 'bg-gradient-to-r from-[#FF2A55] to-[#A3122F] text-white cursor-pointer'
+                        ? 'bg-gradient-to-r from-[#FF2A55] to-[#A3122F] text-white shadow-gold-glow cursor-pointer'
                         : 'bg-white/10 text-gray-500 cursor-not-allowed border border-white/5'
                     }`}
                   >
@@ -245,51 +278,37 @@ export const OvalTable: React.FC<OvalTableProps> = ({
           {/* SVG Target Vector Lasers */}
           <TargetLines targets={activeTargets} seatCoordinates={seatCoordinates} />
 
-          {/* ALL SEATS (Occupied Players + Crisp Glassmorphic Empty Slots) */}
+          {/* ALL SEATS */}
           {Array.from({ length: totalSeats }, (_, i) => i + 1).map((seatNum) => {
             const coord = seatCoordinates[seatNum] || { x: 50, y: 50 };
             const player = playerMap[seatNum];
 
-            if (player) {
-              return (
-                <PlayerSeat
-                  key={`occupied-seat-${seatNum}`}
-                  player={player}
-                  isMe={player.seat_number === mySeatNumber}
-                  isSelectedTarget={selectedTargetSeat === player.seat_number}
-                  canTarget={canTarget && player.is_alive && player.seat_number !== mySeatNumber}
-                  onSelect={onSelectTarget}
-                  xPercent={coord.x}
-                  yPercent={coord.y}
-                  currentSpeechText={speechMap[player.seat_number]}
-                />
-              );
-            }
-
-            // Crisp Glassmorphic Empty Seat Slot
             return (
-              <div
-                key={`empty-seat-${seatNum}`}
-                style={{
-                  left: `${coord.x}%`,
-                  top: `${coord.y}%`,
-                  transform: 'translate(-50%, -50%)',
-                }}
-                className="absolute z-10 flex flex-col items-center select-none"
-              >
-                <div className="w-12 h-12 rounded-full bg-white/[0.04] border border-white/15 flex items-center justify-center backdrop-blur-sm shadow-md transition-all hover:bg-white/[0.08]">
-                  <span className="font-mono font-bold text-xs text-white/70">
-                    #{seatNum}
-                  </span>
-                </div>
-                <div className="mt-1 px-2 py-0.5 rounded-full text-[9px] font-mono text-white/40 bg-white/[0.03] border border-white/5">
-                  Свободно
-                </div>
-              </div>
+              <PlayerSeat
+                key={`seat-${seatNum}`}
+                player={player}
+                seatNumber={seatNum}
+                isMe={player?.seat_number === mySeatNumber}
+                isSelectedTarget={selectedTargetSeat === seatNum}
+                canTarget={canTarget && !!player && player.is_alive && player.seat_number !== mySeatNumber}
+                canReseat={canReseat && !player && seatNum !== mySeatNumber}
+                onSelect={onSelectTarget}
+                onSeatClick={handleSeatClick}
+                xPercent={coord.x}
+                yPercent={coord.y}
+                currentSpeechText={player ? speechMap[player.seat_number] : undefined}
+              />
             );
           })}
         </div>
       </div>
+
+      {/* Reseat toast (bottom-center) */}
+      {reseatToast && (
+        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-40 bg-black/80 backdrop-blur-sm text-white text-sm px-4 py-2 rounded-full shadow-lg animate-fade-in pointer-events-none whitespace-nowrap">
+          {reseatToast}
+        </div>
+      )}
     </div>
   );
 };

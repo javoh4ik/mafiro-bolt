@@ -1,7 +1,7 @@
 import React from 'react';
 import type { UserProfile, RoomSummary } from '../types/game';
-import { Play, Plus, DoorOpen, Users, ChevronRight, Zap } from 'lucide-react';
-import { sounds } from '../utils/sounds';
+import { Play, Plus, DoorOpen, Users, ChevronRight, Zap, Link2, Check } from 'lucide-react';
+import { getAvatarGradient, getInitials } from '../utils/avatar';
 
 interface LobbyHubProps {
   user: UserProfile;
@@ -12,6 +12,8 @@ interface LobbyHubProps {
   onOpenProfileModal: () => void;
 }
 
+const BOT_USERNAME = import.meta.env.VITE_BOT_USERNAME || 'your_bot';
+
 export const LobbyHub: React.FC<LobbyHubProps> = ({
   user,
   rooms,
@@ -20,24 +22,43 @@ export const LobbyHub: React.FC<LobbyHubProps> = ({
   onOpenCreateModal,
   onOpenProfileModal
 }) => {
+  const gradient = getAvatarGradient(user.first_name || user.username || user.id);
+
+  const handleShareRoom = async (roomId: string) => {
+    const inviteUrl = `https://t.me/${BOT_USERNAME}?startapp=${roomId}`;
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+    } catch {}
+
+    const tg = (window as any).Telegram?.WebApp;
+    if (tg?.openTelegramLink) {
+      try {
+        tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent('Присоединяйся к игре в MAFIRO!')}`);
+      } catch {}
+    }
+  };
+
   return (
     <div className="w-full h-full flex flex-col justify-between p-4 overflow-y-auto no-scrollbar select-none">
-      
+
       {/* ================= 1. CLICKABLE PROFILE CARD ================= */}
       <div
         onClick={() => {
-          sounds.playCoin();
           onOpenProfileModal();
         }}
         className="w-full p-3 rounded-2xl bg-[#0A0E17] border border-white/10 hover:border-[#FF2A55]/50 shadow-md flex items-center justify-between cursor-pointer transition-all active:scale-98"
       >
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-full border-2 border-[#FF2A55] p-0.5 bg-[#121A2A]">
-            <img
-              src={user.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.username || user.id}`}
-              alt={user.first_name}
-              className="w-full h-full rounded-full object-cover bg-[#05070B]"
-            />
+          <div
+            className="w-11 h-11 rounded-full flex items-center justify-center ring-2 ring-white/20"
+            style={{
+              background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
+              boxShadow: `0 0 12px ${gradient.glow}`,
+            }}
+          >
+            <span className="text-sm font-bold text-white tracking-wide">
+              {getInitials(user.first_name)}
+            </span>
           </div>
           <div>
             <h3 className="font-serif font-bold text-sm text-white">
@@ -76,7 +97,7 @@ export const LobbyHub: React.FC<LobbyHubProps> = ({
             onClick={onQuickMatch}
             className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FF2A55] via-[#FF8FA5] to-[#FF2A55] text-white font-serif font-black text-sm uppercase tracking-widest flex items-center justify-center gap-2 shadow-gold-glow active:scale-98 transition-transform"
           >
-            <Play className="w-4 h-4 fill-black" /> БЫСТРАЯ ИГРА
+            <Play className="w-4 h-4 fill-white" /> БЫСТРАЯ ИГРА
           </button>
 
           {/* Action 2: Создать комнату */}
@@ -124,7 +145,7 @@ export const LobbyHub: React.FC<LobbyHubProps> = ({
                         </span>
                       )}
                     </div>
-                    
+
                     <div className="flex items-center gap-2 text-[10px] text-gray-400 font-mono mt-0.5">
                       <span className="flex items-center gap-1">
                         <Users className="w-3 h-3 text-[#FF2A55]" />
@@ -137,13 +158,25 @@ export const LobbyHub: React.FC<LobbyHubProps> = ({
                     </div>
                   </div>
 
-                  <button
-                    type="button"
-                    onClick={() => onJoinRoom(r.room_id)}
-                    className="px-3.5 py-1.5 rounded-xl bg-[#121A2A] border border-white/10 hover:border-[#FF2A55] text-white font-serif font-bold text-xs tracking-wider transition-all active:scale-95"
-                  >
-                    Войти
-                  </button>
+                  <div className="flex items-center gap-1.5">
+                    {/* Share room link */}
+                    <button
+                      type="button"
+                      onClick={() => handleShareRoom(r.room_id)}
+                      title="Скопировать ссылку-приглашение"
+                      className="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/40 hover:bg-blue-600/40 text-blue-300 flex items-center justify-center transition-all active:scale-90"
+                    >
+                      <Link2 className="w-3.5 h-3.5" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => onJoinRoom(r.room_id)}
+                      className="px-3.5 py-1.5 rounded-xl bg-[#121A2A] border border-white/10 hover:border-[#FF2A55] text-white font-serif font-bold text-xs tracking-wider transition-all active:scale-95"
+                    >
+                      Войти
+                    </button>
+                  </div>
                 </div>
               );
             })

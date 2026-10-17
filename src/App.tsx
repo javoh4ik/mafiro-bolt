@@ -12,7 +12,6 @@ import { ProfileModal } from './components/ProfileModal';
 import { GameOverModal } from './components/GameOverModal';
 import { sounds } from './utils/sounds';
 import { Volume2, VolumeX, ArrowLeft } from 'lucide-react';
-
 import { localGameEngine } from './utils/localGameEngine';
 
 const API_BASE = window.location.hostname === 'localhost' ? 'http://localhost:8000/api/v1' : '/api/v1';
@@ -34,7 +33,7 @@ export const App: React.FC = () => {
       id: 'user_' + Math.random().toString(36).substring(2, 8),
       username: 'player_' + randSeed,
       first_name: `${title} #${randSeed}`,
-      avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=user_${randSeed}`,
+      avatar_url: undefined,
       mmr: 1200,
       bucks: 0,
       stars: 0,
@@ -56,7 +55,7 @@ export const App: React.FC = () => {
   const [rooms, setRooms] = useState<RoomSummary[]>([]);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(() => !sounds.isMuted);
 
   // Hold-to-Peek Role Card Modal State
   const [isPeekingRole, setIsPeekingRole] = useState(false);
@@ -145,7 +144,6 @@ export const App: React.FC = () => {
   });
 
   const handleQuickMatch = () => {
-    sounds.playCoin();
     triggerHaptic('medium');
     const availableRooms = rooms.length > 0 ? rooms : localGameEngine.getRooms();
     if (availableRooms.length > 0) {
@@ -161,14 +159,12 @@ export const App: React.FC = () => {
   };
 
   const handleJoinRoom = (roomId: string) => {
-    sounds.playCoin();
     triggerHaptic('medium');
     setActiveRoomId(roomId);
     setCurrentView('table');
   };
 
   const handleLeaveTable = () => {
-    sounds.playCoin();
     triggerHaptic('light');
     leaveRoom();
     setActiveRoomId(null);
@@ -184,7 +180,6 @@ export const App: React.FC = () => {
     is_blitz: boolean;
     role_reveal_on_death: boolean;
   }) => {
-    sounds.playCoin();
     triggerHaptic('medium');
 
     try {
@@ -224,9 +219,7 @@ export const App: React.FC = () => {
   };
 
   const toggleSound = () => {
-    const next = !soundEnabled;
-    setSoundEnabled(next);
-    sounds.enabled = next;
+    setSoundEnabled(!sounds.toggle());
   };
 
   return (
@@ -266,12 +259,10 @@ export const App: React.FC = () => {
                   e.preventDefault();
                   setIsPeekingRole(true);
                   triggerHaptic('medium');
-                  sounds.playCardFlip();
                 }}
                 onPointerUp={() => {
                   setIsPeekingRole(false);
                   triggerHaptic('light');
-                  sounds.playCardFlip();
                 }}
                 onPointerLeave={() => {
                   if (isPeekingRole) {
@@ -283,7 +274,6 @@ export const App: React.FC = () => {
                   e.preventDefault();
                   setIsPeekingRole(true);
                   triggerHaptic('medium');
-                  sounds.playCardFlip();
                 }}
                 onTouchEnd={() => {
                   setIsPeekingRole(false);
@@ -302,9 +292,9 @@ export const App: React.FC = () => {
             <button
               type="button"
               onClick={toggleSound}
-              className="p-1.5 rounded-lg bg-[#121A2A] border border-white/10 text-gray-300 hover:text-white"
+              className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-gray-200 transition-colors"
             >
-              {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5 text-gray-500" />}
+              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 text-gray-500" />}
             </button>
           </div>
 
@@ -325,6 +315,12 @@ export const App: React.FC = () => {
               onSelectTarget={(seat) => {
                 triggerHaptic('light');
                 setSelectedTargetSeat((prev) => (prev === seat ? undefined : seat));
+              }}
+              onReseat={(seat) => {
+                triggerHaptic('medium');
+                if (activeRoomId) {
+                  localGameEngine.reseat(activeRoomId, userProfile.id, seat);
+                }
               }}
               recentMessages={gameState?.messages}
               onStartGame={startGame}

@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { PublicPlayer } from '../types/game';
 import confetti from 'canvas-confetti';
 import { Trophy, ArrowLeft, RefreshCw, Star, DollarSign } from 'lucide-react';
-import { sounds } from '../utils/sounds';
 
 interface GameOverModalProps {
   winner?: string;
@@ -22,7 +21,6 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
   useEffect(() => {
     // Fire festive luxury confetti
     try {
-      sounds.playCoin();
       confetti({
         particleCount: 80,
         spread: 70,

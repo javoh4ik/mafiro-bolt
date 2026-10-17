@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { ShopItem, UserProfile } from '../types/game';
 import { X, Star, DollarSign, Check, ShieldCheck, Sparkles } from 'lucide-react';
-import { sounds } from '../utils/sounds';
 
 interface ShopDrawerProps {
   isOpen: boolean;
@@ -25,7 +24,6 @@ export const ShopDrawer: React.FC<ShopDrawerProps> = ({
   if (!isOpen) return null;
 
   const handlePurchase = (itemId: string, currency: 'stars' | 'bucks') => {
-    sounds.playCoin();
     if (currency === 'stars') {
       onRequestInvoice(itemId);
     } else {

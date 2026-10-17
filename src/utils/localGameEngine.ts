@@ -431,7 +431,7 @@ class LocalGameEngine {
         seat_number: seat,
         username: user.username || `player_${seat}`,
         first_name: user.first_name || `Игрок #${seat}`,
-        avatar_url: user.avatar_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.id}`,
+        avatar_url: user.avatar_url,
         is_bot: false,
         is_alive: true,
         votes_received: 0
@@ -444,17 +444,6 @@ class LocalGameEngine {
         data.host_id = user.id;
       }
 
-      data.messages.push({
-        id: 'sys_' + Date.now(),
-        sender_id: 'system',
-        sender_seat: 0,
-        sender_name: 'MAFIRO',
-        text: `Игрок #${player.seat_number} ${player.first_name} занял место за столом.`,
-        channel: 'system',
-        timestamp: Date.now() / 1000,
-        is_system: true
-      });
-
       this.saveRoomData(roomId, data);
     }
   }
@@ -465,19 +454,7 @@ class LocalGameEngine {
 
     const idx = data.players.findIndex(p => p.id === userId);
     if (idx !== -1) {
-      const p = data.players[idx];
       data.players.splice(idx, 1);
-
-      data.messages.push({
-        id: 'sys_' + Date.now(),
-        sender_id: 'system',
-        sender_seat: 0,
-        sender_name: 'MAFIRO',
-        text: `Игрок #${p.seat_number} ${p.first_name} покинул стол.`,
-        channel: 'system',
-        timestamp: Date.now() / 1000,
-        is_system: true
-      });
 
       // Reassign host if host left
       if (data.host_id === userId && data.players.length > 0) {
@@ -508,7 +485,7 @@ class LocalGameEngine {
         seat_number: seat,
         username: botName.toLowerCase(),
         first_name: botName,
-        avatar_url: `https://api.dicebear.com/7.x/bottts/svg?seed=${botId}`,
+        avatar_url: undefined,
         is_bot: true,
         is_alive: true,
         votes_received: 0
@@ -562,6 +539,22 @@ class LocalGameEngine {
       is_system: true
     });
 
+    this.saveRoomData(roomId, data);
+  }
+
+  public reseat(roomId: string, userId: string, targetSeat: number) {
+    const data = this.getRoomData(roomId);
+    if (!data || data.phase !== 'lobby') return;
+
+    const player = data.players.find(p => p.id === userId);
+    if (!player) return;
+    if (targetSeat === player.seat_number) return;
+
+    const occupant = data.players.find(p => p.seat_number === targetSeat);
+    if (occupant) return;
+    if (targetSeat < 1 || targetSeat > data.max_players) return;
+
+    player.seat_number = targetSeat;
     this.saveRoomData(roomId, data);
   }
 
