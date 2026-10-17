@@ -45,13 +45,13 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in select-none">
-      <div className="w-full max-w-[360px] rounded-3xl bg-[#0D1119] border border-[#c5a059]/40 shadow-2xl p-5 flex flex-col gap-4 text-white">
+      <div className="w-full max-w-[360px] rounded-3xl bg-[#0A0E17] border border-[#FF2A55]/40 shadow-2xl p-5 flex flex-col gap-4 text-white">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-white/10 pb-3">
           <div className="flex items-center gap-2">
-            <User className="w-5 h-5 text-[#D4AF37]" />
-            <h3 className="font-serif font-bold text-base uppercase tracking-wider text-[#FFF3B0]">
+            <User className="w-5 h-5 text-[#FF2A55]" />
+            <h3 className="font-serif font-bold text-base uppercase tracking-wider text-[#FF8FA5]">
               Профиль игрока
             </h3>
           </div>
@@ -66,11 +66,11 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
         {/* Avatar & Pickers */}
         <div className="flex flex-col items-center gap-3">
-          <div className="w-20 h-20 rounded-full border-2 border-[#D4AF37] p-1 bg-[#141A26] shadow-gold-glow">
+          <div className="w-20 h-20 rounded-full border-2 border-[#FF2A55] p-1 bg-[#121A2A] shadow-gold-glow">
             <img
               src={`https://api.dicebear.com/7.x/bottts/svg?seed=${selectedSeed}`}
               alt="Avatar"
-              className="w-full h-full rounded-full object-cover bg-[#090C12]"
+              className="w-full h-full rounded-full object-cover bg-[#05070B]"
             />
           </div>
 
@@ -82,7 +82,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
                 onClick={() => setSelectedSeed(seed)}
                 className={`w-8 h-8 rounded-full border p-0.5 transition-all ${
                   selectedSeed === seed
-                    ? 'border-[#D4AF37] scale-110 shadow-gold-glow'
+                    ? 'border-[#FF2A55] scale-110 shadow-gold-glow'
                     : 'border-white/20 opacity-60 hover:opacity-100'
                 }`}
               >
@@ -97,7 +97,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-[#141A26]/80 border border-white/5 text-center font-mono">
+        <div className="grid grid-cols-3 gap-2 p-3 rounded-2xl bg-[#121A2A]/80 border border-white/5 text-center font-mono">
           <div className="flex flex-col">
             <span className="text-[10px] text-gray-400 uppercase">Игр</span>
             <span className="text-base font-bold text-white">{user.games_played}</span>
@@ -115,7 +115,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
         {/* Name Edit Form */}
         <form onSubmit={handleSave} className="flex flex-col gap-3">
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-serif text-[#D4AF37] uppercase tracking-wider">
+            <label className="text-xs font-serif text-[#FF2A55] uppercase tracking-wider">
               Имя игрока
             </label>
             <input
@@ -123,7 +123,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
               value={name}
               onChange={(e) => setName(e.target.value)}
               maxLength={16}
-              className="w-full px-3 py-2 rounded-xl bg-[#121824] border border-white/10 focus:border-[#D4AF37] outline-none text-xs text-white"
+              className="w-full px-3 py-2 rounded-xl bg-[#0F1522] border border-white/10 focus:border-[#FF2A55] outline-none text-xs text-white"
               required
             />
           </div>
@@ -135,7 +135,7 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({
 
           <button
             type="submit"
-            className="w-full mt-1 py-2.5 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA8012] text-black font-serif font-black text-xs uppercase tracking-wider shadow-gold-glow active:scale-95 transition-transform flex items-center justify-center gap-1.5"
+            className="w-full mt-1 py-2.5 rounded-xl bg-gradient-to-r from-[#FF2A55] to-[#A3122F] text-white font-serif font-black text-xs uppercase tracking-wider shadow-gold-glow active:scale-95 transition-transform flex items-center justify-center gap-1.5"
           >
             {savedToast ? <Check className="w-4 h-4 stroke-[3]" /> : null}
             <span>{savedToast ? 'Сохранено!' : 'Сохранить изменения'}</span>

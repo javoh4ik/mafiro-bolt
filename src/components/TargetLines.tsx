@@ -14,14 +14,14 @@ export const TargetLines: React.FC<TargetLinesProps> = ({ targets, seatCoordinat
       <defs>
         {/* Golden laser gradient */}
         <linearGradient id="target-gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#D4AF37" stopOpacity="0.8" />
-          <stop offset="100%" stopColor="#FFF3B0" stopOpacity="1" />
+          <stop offset="0%" stopColor="#FF2A55" stopOpacity="0.8" />
+          <stop offset="100%" stopColor="#FF8FA5" stopOpacity="1" />
         </linearGradient>
 
         {/* Crimson laser gradient */}
         <linearGradient id="target-crimson-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stopColor="#DC2626" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#7F1D1D" stopOpacity="0.6" />
+          <stop offset="0%" stopColor="#FF2A55" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#A3122F" stopOpacity="0.6" />
         </linearGradient>
 
         {/* Arrow marker */}
@@ -46,7 +46,7 @@ export const TargetLines: React.FC<TargetLinesProps> = ({ targets, seatCoordinat
           markerHeight="6"
           orient="auto-start-reverse"
         >
-          <path d="M 0 1 L 8 5 L 0 9 z" fill="#D4AF37" />
+          <path d="M 0 1 L 8 5 L 0 9 z" fill="#FF2A55" />
         </marker>
       </defs>
 
@@ -63,7 +63,7 @@ export const TargetLines: React.FC<TargetLinesProps> = ({ targets, seatCoordinat
               y1={`${fromCoord.y}%`}
               x2={`${toCoord.x}%`}
               y2={`${toCoord.y}%`}
-              stroke="rgba(220, 38, 38, 0.4)"
+              stroke="rgba(255, 42, 85, 0.4)"
               strokeWidth="4"
               strokeDasharray="6 4"
             />

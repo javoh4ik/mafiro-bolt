@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --bg-obsidian: #07090E;
-  --surface-elevated: #0D1119;
-  --accent-gold: #D4AF37;
-  --felt-night: #0E1726;
+  --bg-obsidian: #05070B;
+  --surface-elevated: #0A0E17;
+  --accent-crimson: #FF2A55;
+  --felt-night: #101A2E;
   --felt-day: #092218;
   --felt-vote: #260B12;
 }
@@ -26,14 +26,14 @@ html, body, #root {
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-/* Custom Gold Foil Border Utilities */
+/* Crimson Foil Border Utilities */
 .gold-border {
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(255, 42, 85, 0.4);
+  box-shadow: 0 0 10px rgba(255, 42, 85, 0.2);
 }
 
 .gold-gradient-text {
-  background: linear-gradient(135deg, #FFF3B0 0%, #D4AF37 50%, #AA8012 100%);
+  background: linear-gradient(135deg, #FF8FA5 0%, #FF2A55 50%, #A3122F 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -42,6 +42,19 @@ html, body, #root {
   background: linear-gradient(135deg, #FFAAA6 0%, #DC2626 50%, #7F1D1D 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Holographic edge sheen for premium cards */
+.holo-sheen {
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0.07) 0%,
+    rgba(255, 42, 85, 0.1) 28%,
+    transparent 52%,
+    rgba(255, 143, 165, 0.07) 78%,
+    rgba(255, 255, 255, 0.05) 100%
+  );
+  mix-blend-mode: screen;
 }
 
 /* 3D Flip Card Styles */
@@ -64,22 +77,22 @@ html, body, #root {
 
 /* Modern Velvet Table Surface */
 .felt-surface-day {
-  background: radial-gradient(ellipse at center, #132a23 0%, #091412 75%, #050a09 100%);
+  background: radial-gradient(ellipse at center, #11301F 0%, #081811 75%, #040B07 100%);
 }
 
 .felt-surface-night {
-  background: radial-gradient(ellipse at center, #131b2e 0%, #090d17 75%, #05070d 100%);
+  background: radial-gradient(ellipse at center, #141D33 0%, #0A101E 75%, #05070D 100%);
 }
 
 .felt-surface-vote {
-  background: radial-gradient(ellipse at center, #2e1117 0%, #17070a 75%, #0d0305 100%);
+  background: radial-gradient(ellipse at center, #2E101A 0%, #17070D 75%, #0C0306 100%);
 }
 
 /* Clean Matte Obsidian Card Back */
 .tarot-back-pattern {
   background-color: #0B0E14;
   background-image: 
-    linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, transparent 100%),
+    linear-gradient(135deg, rgba(255, 42, 85, 0.05) 0%, transparent 100%),
     radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.02) 0%, transparent 70%);
 }
 
@@ -94,10 +107,10 @@ html, body, #root {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(212, 175, 55, 0.3);
+  background: rgba(255, 42, 85, 0.3);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(212, 175, 55, 0.6);
+  background: rgba(255, 42, 85, 0.6);
 }

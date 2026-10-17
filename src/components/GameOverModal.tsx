@@ -27,7 +27,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
         particleCount: 80,
         spread: 70,
         origin: { y: 0.6 },
-        colors: ['#D4AF37', '#FFF3B0', '#DC2626', '#10B981']
+        colors: ['#FF2A55', '#FF8FA5', '#DC2626', '#10B981']
       });
     } catch {}
   }, []);
@@ -39,10 +39,10 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fade-in select-none">
       <div className={`w-full max-w-[390px] rounded-3xl p-5 border-2 shadow-luxury flex flex-col items-center text-white ${
         isSyndicateWin
-          ? 'bg-gradient-to-b from-[#1C090E] via-[#0E0608] to-[#07090E] border-red-500/60 shadow-crimson-glow'
+          ? 'bg-gradient-to-b from-[#1C090E] via-[#0E0608] to-[#05070B] border-red-500/60 shadow-crimson-glow'
           : isTownWin
-          ? 'bg-gradient-to-b from-[#091D13] via-[#05110A] to-[#07090E] border-emerald-500/60 shadow-gold-glow'
-          : 'bg-gradient-to-b from-[#1C1405] via-[#0E0B04] to-[#07090E] border-[#D4AF37]/60 shadow-gold-glow'
+          ? 'bg-gradient-to-b from-[#091D13] via-[#05110A] to-[#05070B] border-emerald-500/60 shadow-gold-glow'
+          : 'bg-gradient-to-b from-[#2A0812] via-[#170409] to-[#05070B] border-[#FF2A55]/60 shadow-gold-glow'
       }`}>
         
         {/* Victory Icon & Title */}
@@ -50,7 +50,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
           {isSyndicateWin ? '👑' : isTownWin ? '⭐' : '🔪'}
         </div>
 
-        <h2 className="font-serif text-xl font-black tracking-widest uppercase text-center text-[#FFF3B0]">
+        <h2 className="font-serif text-xl font-black tracking-widest uppercase text-center text-[#FF8FA5]">
           {isSyndicateWin ? 'ПОБЕДА СИНДИКАТА' : isTownWin ? 'ПОБЕДА ГОРОДА' : 'ПОБЕДА МАНЬЯКА'}
         </h2>
         
@@ -60,7 +60,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
 
         {/* All Players Roles Reveal */}
         <div className="w-full my-4 flex flex-col">
-          <span className="font-serif text-[11px] font-bold text-[#D4AF37] uppercase tracking-wider mb-1.5 px-1">
+          <span className="font-serif text-[11px] font-bold text-[#FF2A55] uppercase tracking-wider mb-1.5 px-1">
             Карты всех игроков:
           </span>
           <div className="space-y-1 max-h-[140px] overflow-y-auto no-scrollbar pr-1">
@@ -69,15 +69,15 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
                 key={`reveal-${p.seat_number}`}
                 className={`flex items-center justify-between p-2 rounded-xl border text-xs font-mono ${
                   p.seat_number === mySeatNumber
-                    ? 'bg-[#D4AF37]/15 border-[#D4AF37]/50'
-                    : 'bg-[#121824]/60 border-white/5'
+                    ? 'bg-[#FF2A55]/15 border-[#FF2A55]/50'
+                    : 'bg-[#0F1522]/60 border-white/5'
                 }`}
               >
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-[#D4AF37]">#{p.seat_number}</span>
+                  <span className="font-bold text-[#FF2A55]">#{p.seat_number}</span>
                   <span className="text-gray-200">{p.first_name}</span>
                   {p.seat_number === mySeatNumber && (
-                    <span className="text-[9px] text-[#FFF3B0] bg-[#D4AF37]/30 px-1 rounded">ВЫ</span>
+                    <span className="text-[9px] text-[#FF8FA5] bg-[#FF2A55]/30 px-1 rounded">ВЫ</span>
                   )}
                 </div>
 
@@ -96,7 +96,7 @@ export const GameOverModal: React.FC<GameOverModalProps> = ({
         <button
           type="button"
           onClick={onReturnToLobby}
-          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA8012] text-black font-serif font-black text-xs uppercase tracking-widest shadow-gold-glow active:scale-95 transition-transform flex items-center justify-center gap-2"
+          className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FF2A55] to-[#A3122F] text-white font-serif font-black text-xs uppercase tracking-widest shadow-gold-glow active:scale-95 transition-transform flex items-center justify-center gap-2"
         >
           <ArrowLeft className="w-4 h-4 stroke-[3]" /> В главное меню
         </button>

@@ -56,7 +56,7 @@ export const ChatDock: React.FC<ChatDockProps> = ({
   });
 
   return (
-    <div className="relative w-full h-[38dvh] bg-[#07090E]/95 border-t border-white/10 flex flex-col justify-between backdrop-blur-xl z-20">
+    <div className="relative w-full h-[38dvh] bg-[#05070B]/95 border-t border-white/10 flex flex-col justify-between backdrop-blur-xl z-20">
       
       {/* Night Mafia Badge if active */}
       {isNight && isMafia && isAlive && (
@@ -87,8 +87,8 @@ export const ChatDock: React.FC<ChatDockProps> = ({
           displayMessages.map((m) => {
             if (m.is_system) {
               return (
-                <div key={m.id} className="py-1 px-3 rounded-lg bg-black/40 border border-[#D4AF37]/20 text-center mx-auto max-w-[90%]">
-                  <span className="font-serif text-[11px] text-[#D4AF37] font-semibold">
+                <div key={m.id} className="py-1 px-3 rounded-lg bg-black/40 border border-[#FF2A55]/20 text-center mx-auto max-w-[90%]">
+                  <span className="font-serif text-[11px] text-[#FF2A55] font-semibold">
                     {m.text}
                   </span>
                 </div>
@@ -101,10 +101,10 @@ export const ChatDock: React.FC<ChatDockProps> = ({
             return (
               <div
                 key={m.id}
-                className={`flex flex-col ${isMyMsg ? 'items-end' : 'items-start'}`}
+                className={`flex flex-col animate-message-in ${isMyMsg ? 'items-end' : 'items-start'}`}
               >
                 <div className="flex items-center gap-1.5 mb-0.5 px-1">
-                  <span className="font-mono text-[9px] font-bold text-[#D4AF37]">
+                  <span className="font-mono text-[9px] font-bold text-[#FF2A55]">
                     #{m.sender_seat}
                   </span>
                   <span className="text-[10px] font-semibold text-gray-400">
@@ -122,10 +122,10 @@ export const ChatDock: React.FC<ChatDockProps> = ({
                     isMyMsg
                       ? isSyndicateMsg
                         ? 'bg-red-800 text-white rounded-tr-none'
-                        : 'bg-[#D4AF37] text-black font-semibold rounded-tr-none'
+                        : 'bg-[#FF2A55] text-white font-semibold rounded-tr-none'
                       : isSyndicateMsg
                       ? 'bg-red-950/90 border border-red-800/60 text-red-100 rounded-tl-none'
-                      : 'bg-[#141A26] border border-white/10 text-[#E5E0D8] rounded-tl-none'
+                      : 'bg-[#121A2A] border border-white/10 text-[#E5E0D8] rounded-tl-none'
                   }`}
                 >
                   {m.text}
@@ -153,14 +153,14 @@ export const ChatDock: React.FC<ChatDockProps> = ({
               ? "👻 Чат призраков..."
               : "Написать в чат..."
           }
-          className="flex-1 bg-[#121824] border border-white/10 focus:border-[#D4AF37] rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 outline-none transition-all disabled:opacity-40"
+          className="flex-1 bg-[#0F1522] border border-white/10 focus:border-[#FF2A55] rounded-xl px-3.5 py-2 text-xs text-white placeholder-gray-500 outline-none transition-all disabled:opacity-40"
         />
 
         <button
           type="button"
           onClick={handleSend}
           disabled={isNightCitizen || !inputText.trim() || (!isAlive && phase !== 'last_word')}
-          className="w-9 h-9 rounded-xl bg-[#D4AF37] hover:bg-[#FFF3B0] text-black flex items-center justify-center transition-all active:scale-95 disabled:opacity-30 shadow-sm"
+          className="w-9 h-9 rounded-xl bg-[#FF2A55] hover:bg-[#FF8FA5] text-white flex items-center justify-center transition-all active:scale-95 disabled:opacity-30 shadow-sm"
         >
           <Send className="w-4 h-4" />
         </button>

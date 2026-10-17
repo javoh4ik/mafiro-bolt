@@ -36,13 +36,13 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-fade-in select-none">
-      <div className="w-full max-w-[400px] rounded-t-3xl sm:rounded-3xl bg-[#0D1119] border border-[#c5a059]/40 shadow-2xl p-5 flex flex-col gap-4 text-white">
+      <div className="w-full max-w-[400px] rounded-t-3xl sm:rounded-3xl bg-[#0A0E17] border border-[#FF2A55]/40 shadow-2xl p-5 flex flex-col gap-4 text-white">
         
         {/* Header */}
         <div className="w-full flex items-center justify-between border-b border-white/10 pb-3">
           <div className="flex items-center gap-2">
             <span className="text-xl">🎩</span>
-            <h3 className="font-serif font-bold text-base tracking-wider uppercase text-[#FFF3B0]">
+            <h3 className="font-serif font-bold text-base tracking-wider uppercase text-[#FF8FA5]">
               Создать комнату
             </h3>
           </div>
@@ -58,14 +58,14 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* Room Name */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-serif text-[#D4AF37] uppercase tracking-wider">
+            <label className="text-xs font-serif text-[#FF2A55] uppercase tracking-wider">
               Название стола
             </label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-3 py-2 rounded-xl bg-[#121824] border border-white/10 focus:border-[#D4AF37] outline-none text-xs text-white"
+              className="w-full px-3 py-2 rounded-xl bg-[#0F1522] border border-white/10 focus:border-[#FF2A55] outline-none text-xs text-white"
               maxLength={24}
               required
             />
@@ -74,10 +74,10 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
           {/* Max Players Slider (4 to 12) */}
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-serif text-[#D4AF37] uppercase tracking-wider flex items-center gap-1">
+              <span className="font-serif text-[#FF2A55] uppercase tracking-wider flex items-center gap-1">
                 <Users className="w-3.5 h-3.5" /> Вместимость стола
               </span>
-              <span className="font-mono font-bold text-sm text-white px-2.5 py-0.5 rounded bg-[#141A26] border border-[#D4AF37]/30 text-[#FFF3B0]">
+              <span className="font-mono font-bold text-sm text-white px-2.5 py-0.5 rounded bg-[#121A2A] border border-[#FF2A55]/30 text-[#FF8FA5]">
                 {maxPlayers} мест
               </span>
             </div>
@@ -88,7 +88,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
               step="1"
               value={maxPlayers}
               onChange={(e) => setMaxPlayers(parseInt(e.target.value, 10))}
-              className="w-full accent-[#D4AF37] cursor-pointer"
+              className="w-full accent-[#FF2A55] cursor-pointer"
             />
             <div className="w-full flex justify-between text-[10px] text-gray-400 font-mono">
               <span>4</span>
@@ -104,7 +104,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
             {/* Blitz Mode */}
             <div
               onClick={() => setIsBlitz(!isBlitz)}
-              className="flex items-center justify-between p-2.5 rounded-xl bg-[#121824] border border-white/5 hover:border-white/10 cursor-pointer"
+              className="flex items-center justify-between p-2.5 rounded-xl bg-[#0F1522] border border-white/5 hover:border-white/10 cursor-pointer"
             >
               <div className="flex items-center gap-2">
                 <Zap className={`w-4 h-4 ${isBlitz ? 'text-amber-400' : 'text-gray-500'}`} />
@@ -123,7 +123,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
             {/* Role Reveal on Death */}
             <div
               onClick={() => setRoleReveal(!roleReveal)}
-              className="flex items-center justify-between p-2.5 rounded-xl bg-[#121824] border border-white/5 hover:border-white/10 cursor-pointer"
+              className="flex items-center justify-between p-2.5 rounded-xl bg-[#0F1522] border border-white/5 hover:border-white/10 cursor-pointer"
             >
               <div className="flex items-center gap-2">
                 <Shield className={`w-4 h-4 ${roleReveal ? 'text-emerald-400' : 'text-gray-500'}`} />
@@ -143,7 +143,7 @@ export const CreateRoomModal: React.FC<CreateRoomModalProps> = ({
           {/* Submit CTA */}
           <button
             type="submit"
-            className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-[#D4AF37] to-[#AA8012] text-black font-serif font-black text-xs uppercase tracking-widest shadow-gold-glow active:scale-95 transition-transform"
+            className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-[#FF2A55] to-[#A3122F] text-white font-serif font-black text-xs uppercase tracking-widest shadow-gold-glow active:scale-95 transition-transform"
           >
             СОЗДАТЬ КОМНАТУ
           </button>

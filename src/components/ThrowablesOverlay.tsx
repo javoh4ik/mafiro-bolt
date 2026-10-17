@@ -68,8 +68,8 @@ export const ThrowablesOverlay: React.FC<ThrowablesOverlayProps> = ({
     <>
       {/* Floating Throwables Toolbar if a target seat is selected */}
       {selectedTargetSeat && (
-        <div className="absolute top-16 right-3 z-30 flex flex-col gap-1.5 p-1.5 rounded-2xl bg-[#0D1119]/90 border border-[#D4AF37]/30 shadow-luxury backdrop-blur-md animate-fade-in">
-          <span className="text-[9px] font-mono text-[#D4AF37] text-center font-bold">
+        <div className="absolute top-16 right-3 z-30 flex flex-col gap-1.5 p-1.5 rounded-2xl bg-[#0A0E17]/90 border border-[#FF2A55]/30 shadow-luxury backdrop-blur-md animate-fade-in">
+          <span className="text-[9px] font-mono text-[#FF2A55] text-center font-bold">
             БРОСИТЬ
           </span>
           {items.map((i) => (
@@ -78,7 +78,7 @@ export const ThrowablesOverlay: React.FC<ThrowablesOverlayProps> = ({
               type="button"
               onClick={() => onThrow(selectedTargetSeat, i.type)}
               title={i.label}
-              className="w-8 h-8 rounded-xl bg-[#141A26] border border-white/10 hover:border-[#D4AF37] flex items-center justify-center text-sm transition-transform active:scale-90"
+              className="w-8 h-8 rounded-xl bg-[#121A2A] border border-white/10 hover:border-[#FF2A55] flex items-center justify-center text-sm transition-transform active:scale-90"
             >
               {i.icon}
             </button>

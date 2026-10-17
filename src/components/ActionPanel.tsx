@@ -71,7 +71,7 @@ export const ActionPanel: React.FC<ActionPanelProps> = ({
   if (phase === 'night' && canAct) {
     let actionTitle = 'Выбрать';
     let actionIcon = <Crosshair className="w-3.5 h-3.5" />;
-    let btnColor = 'bg-[#D4AF37] text-black';
+    let btnColor = 'bg-[#FF2A55] text-white shadow-gold-glow';
 
     if (myRole === 'mafia' || myRole === 'don') {
       actionTitle = 'Устранить';

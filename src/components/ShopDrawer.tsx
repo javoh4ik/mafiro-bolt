@@ -37,14 +37,14 @@ export const ShopDrawer: React.FC<ShopDrawerProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-sm animate-fade-in">
-      <div className="w-full max-w-[430px] rounded-t-3xl sm:rounded-3xl bg-[#0D1119] border border-[#D4AF37]/30 shadow-luxury p-5 flex flex-col gap-4 text-white max-h-[90dvh] overflow-y-auto no-scrollbar">
+      <div className="w-full max-w-[430px] rounded-t-3xl sm:rounded-3xl bg-[#0A0E17] border border-[#FF2A55]/30 shadow-luxury p-5 flex flex-col gap-4 text-white max-h-[90dvh] overflow-y-auto no-scrollbar">
         
         {/* Header */}
         <div className="w-full flex items-center justify-between border-b border-white/10 pb-3">
           <div className="flex items-center gap-2">
             <span className="text-xl">⭐</span>
             <div>
-              <h3 className="font-serif font-bold text-base tracking-wider uppercase text-[#FFF3B0]">
+              <h3 className="font-serif font-bold text-base tracking-wider uppercase text-[#FF8FA5]">
                 Подпольный Арсенал
               </h3>
               <p className="text-[10px] text-gray-400">Telegram Stars & Syndicate Bucks</p>
@@ -60,9 +60,9 @@ export const ShopDrawer: React.FC<ShopDrawerProps> = ({
         </div>
 
         {/* User Balance Strip */}
-        <div className="flex items-center justify-between p-3 rounded-xl bg-[#121824] border border-white/5 font-mono text-xs">
+        <div className="flex items-center justify-between p-3 rounded-xl bg-[#0F1522] border border-white/5 font-mono text-xs">
           <div className="flex items-center gap-1.5 text-amber-300 font-bold">
-            <Star className="w-4 h-4 fill-[#D4AF37] text-[#D4AF37]" />
+            <Star className="w-4 h-4 fill-[#FF2A55] text-[#FF2A55]" />
             <span>Баланс: {user.stars} ⭐</span>
           </div>
           <div className="flex items-center gap-1 text-emerald-400 font-bold">
@@ -86,7 +86,7 @@ export const ShopDrawer: React.FC<ShopDrawerProps> = ({
             return (
               <div
                 key={item.id}
-                className="p-3.5 rounded-2xl bg-[#121824] border border-white/10 hover:border-[#D4AF37]/40 flex flex-col gap-2.5 transition-colors shadow-sm"
+                className="p-3.5 rounded-2xl bg-[#0F1522] border border-white/10 hover:border-[#FF2A55]/40 flex flex-col gap-2.5 transition-colors shadow-sm"
               >
                 {/* Item Info */}
                 <div className="flex items-start justify-between">
@@ -98,7 +98,7 @@ export const ShopDrawer: React.FC<ShopDrawerProps> = ({
                       <h4 className="font-serif font-bold text-xs text-white">
                         {item.title}
                       </h4>
-                      <span className="text-[10px] text-[#D4AF37] font-semibold">
+                      <span className="text-[10px] text-[#FF2A55] font-semibold">
                         {item.subtitle}
                       </span>
                     </div>

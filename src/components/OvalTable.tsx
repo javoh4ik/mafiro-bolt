@@ -129,17 +129,17 @@ export const OvalTable: React.FC<OvalTableProps> = ({
         return {
           title: 'ФИНАЛ ИГРЫ',
           desc: 'Итоги противостояния',
-          icon: <Scale className="w-4 h-4 text-[#D4AF37]" />,
-          color: 'text-[#D4AF37]',
-          badgeBorder: 'border-[#D4AF37]/50'
+          icon: <Scale className="w-4 h-4 text-[#FF2A55]" />,
+          color: 'text-[#FF2A55]',
+          badgeBorder: 'border-[#FF2A55]/50'
         };
       default:
         return {
           title: roomName,
           desc: `Ожидание игроков: ${players.length} / ${totalSeats}`,
-          icon: <Users className="w-4 h-4 text-[#D4AF37]" />,
-          color: 'text-[#D4AF37]',
-          badgeBorder: 'border-[#D4AF37]/30'
+          icon: <Users className="w-4 h-4 text-[#FF2A55]" />,
+          color: 'text-[#FF2A55]',
+          badgeBorder: 'border-[#FF2A55]/30'
         };
     }
   }, [phase, dayNumber, roomName, players.length, totalSeats]);
@@ -168,20 +168,22 @@ export const OvalTable: React.FC<OvalTableProps> = ({
 
   return (
     <div className="relative w-full h-[54dvh] min-h-[390px] max-h-[500px] flex items-center justify-center p-2 select-none">
-      {/* Outer Modern Wooden / Bronze Rim */}
-      <div className="relative w-full h-full rounded-[140px] p-2.5 bg-[#090C10] border-2 border-[#c5a059]/40 shadow-2xl flex items-center justify-center">
+      {/* Outer Modern Obsidian Rim with crimson ambient edge lighting */}
+      <div className="relative w-full h-full rounded-[140px] p-2.5 bg-gradient-to-b from-[#0D1119] to-[#05070B] border-2 border-[#FF2A55]/30 shadow-[0_0_45px_rgba(255,42,85,0.18),0_18px_40px_rgba(0,0,0,0.7)] flex items-center justify-center">
         
         {/* Table Felt Surface */}
         <div className={`relative w-full h-full rounded-[125px] transition-colors duration-700 border flex items-center justify-center overflow-visible ${feltBgClass}`}>
           
-          {/* Decorative Gold Filigree Inner Ring */}
-          <div className="absolute inset-4 rounded-[105px] border border-[#c5a059]/20 pointer-events-none" />
+          {/* Decorative Inner Ring */}
+          <div className="absolute inset-4 rounded-[105px] border border-white/[0.08] pointer-events-none" />
+          {/* Crimson ambient edge glow inside the felt */}
+          <div className="absolute inset-0 rounded-[125px] shadow-[inset_0_0_60px_rgba(255,42,85,0.12)] pointer-events-none" />
 
           {/* Table Center Info & Minimalist Lobby Controls */}
           <div className="relative z-10 flex flex-col items-center justify-center px-4 py-2 text-center">
             
             {/* Phase Badge */}
-            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#07090E]/90 border backdrop-blur-md shadow-md mb-1 ${phaseInfo.badgeBorder}`}>
+            <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#05070B]/90 border backdrop-blur-md shadow-md mb-1 ${phaseInfo.badgeBorder}`}>
               {phaseInfo.icon}
               <span className={`font-serif tracking-widest text-[11px] font-bold uppercase ${phaseInfo.color}`}>
                 {phaseInfo.title}
@@ -191,7 +193,7 @@ export const OvalTable: React.FC<OvalTableProps> = ({
             {/* JetBrains Mono Tabular Countdown Timer during Match */}
             {phase !== 'lobby' && phase !== 'game_over' && (
               <div className="flex items-center gap-1.5 px-3 py-0.5 rounded-lg bg-black/60 border border-white/10 shadow-inner">
-                <Clock className="w-3.5 h-3.5 text-[#D4AF37]" />
+                <Clock className="w-3.5 h-3.5 text-[#FF2A55]" />
                 <span className="font-mono text-base font-bold tabular-nums text-white tracking-wider">
                   00:{phaseTimeLeft < 10 ? `0${phaseTimeLeft}` : phaseTimeLeft}
                 </span>
@@ -217,7 +219,7 @@ export const OvalTable: React.FC<OvalTableProps> = ({
                     onClick={handleShareLink}
                     className="px-3.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-serif font-bold text-xs flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
                   >
-                    {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-[#c5a059]" />}
+                    {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5 text-[#FF2A55]" />}
                     <span>{copiedLink ? 'Ссылка скопирована' : 'Пригласить'}</span>
                   </button>
 
@@ -228,7 +230,7 @@ export const OvalTable: React.FC<OvalTableProps> = ({
                     disabled={players.length < 4}
                     className={`px-4 py-1.5 rounded-xl font-serif font-black text-xs uppercase tracking-wider flex items-center gap-1.5 shadow-gold-glow active:scale-95 transition-all ${
                       players.length >= 4
-                        ? 'bg-gradient-to-r from-[#D4AF37] to-[#AA8012] text-black cursor-pointer'
+                        ? 'bg-gradient-to-r from-[#FF2A55] to-[#A3122F] text-white cursor-pointer'
                         : 'bg-white/10 text-gray-500 cursor-not-allowed border border-white/5'
                     }`}
                   >

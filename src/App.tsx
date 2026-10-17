@@ -230,7 +230,7 @@ export const App: React.FC = () => {
   };
 
   return (
-    <div className="relative w-full h-[100dvh] max-w-[430px] mx-auto bg-[#07090E] text-[#E5E0D8] overflow-hidden flex flex-col font-sans select-none">
+    <div className="relative w-full h-[100dvh] max-w-[430px] mx-auto bg-[#05070B] text-[#E5E0D8] overflow-hidden flex flex-col font-sans select-none">
       
       {/* ================= SCREEN 1: LOBBY HUB ================= */}
       {currentView === 'lobby' && (
@@ -249,11 +249,11 @@ export const App: React.FC = () => {
         <div className="relative w-full h-full flex flex-col justify-between overflow-hidden">
           
           {/* Top Bar Navigation */}
-          <div className="w-full px-3 py-2 bg-[#090D15]/95 border-b border-white/10 flex items-center justify-between z-30 backdrop-blur-md">
+          <div className="w-full px-3 py-2 bg-[#0A0E17]/95 border-b border-white/10 flex items-center justify-between z-30 backdrop-blur-md">
             <button
               type="button"
               onClick={handleLeaveTable}
-              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#141A26] border border-white/10 hover:border-[#D4AF37] text-xs text-gray-300 font-medium active:scale-95 transition-all"
+              className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#121A2A] border border-white/10 hover:border-[#FF2A55] text-xs text-gray-300 font-medium active:scale-95 transition-all"
             >
               <ArrowLeft className="w-3.5 h-3.5" /> В лобби
             </button>
@@ -291,8 +291,8 @@ export const App: React.FC = () => {
                 }}
                 className={`px-3 py-1.5 rounded-xl border flex items-center gap-1.5 font-serif font-black text-xs tracking-wider uppercase transition-all shadow-md active:scale-95 select-none ${
                   isPeekingRole
-                    ? 'bg-[#D4AF37] text-black border-[#FFF3B0] shadow-gold-glow'
-                    : 'bg-[#141A26] border-[#D4AF37]/50 text-[#FFF3B0] hover:border-[#D4AF37]'
+                    ? 'bg-[#FF2A55] text-white border-[#FF8FA5] shadow-gold-glow'
+                    : 'bg-[#121A2A] border-[#FF2A55]/50 text-[#FF8FA5] hover:border-[#FF2A55]'
                 }`}
               >
                 <span>🃏</span> МОЯ РОЛЬ <span className="text-[9px] opacity-75 font-mono">(УДЕРЖИВАЙ)</span>
@@ -302,7 +302,7 @@ export const App: React.FC = () => {
             <button
               type="button"
               onClick={toggleSound}
-              className="p-1.5 rounded-lg bg-[#141A26] border border-white/10 text-gray-300 hover:text-white"
+              className="p-1.5 rounded-lg bg-[#121A2A] border border-white/10 text-gray-300 hover:text-white"
             >
               {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5 text-gray-500" />}
             </button>

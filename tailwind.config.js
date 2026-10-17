@@ -8,21 +8,19 @@ export default {
     extend: {
       colors: {
         noir: {
-          obsidian: "#07090E",
-          surface: "#0D1119",
-          card: "#121824",
+          obsidian: "#05070B",
+          surface: "#0A0E17",
+          card: "#0F1522",
           border: "rgba(255, 255, 255, 0.08)",
-          gold: "#D4AF37",
-          "gold-light": "#F2DC87",
-          "gold-dark": "#997A1E",
-          "gold-glow": "rgba(212, 175, 55, 0.25)",
-          crimson: "#8B1E2E",
-          "crimson-glow": "rgba(139, 30, 46, 0.35)",
+          crimson: "#FF2A55",
+          "crimson-light": "#FF8FA5",
+          "crimson-dark": "#A3122F",
+          "crimson-glow": "rgba(255, 42, 85, 0.35)",
+          blood: "#8B1E2E",
           emerald: "#0E3827",
-          "emerald-glow": "rgba(14, 56, 39, 0.35)",
         },
         felt: {
-          night: "#0E1726",
+          night: "#101A2E",
           day: "#092218",
           vote: "#260B12",
         }
@@ -33,20 +31,31 @@ export default {
         mono: ['"JetBrains Mono"', 'monospace'],
       },
       boxShadow: {
-        'luxury': '0 8px 32px 0 rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(212, 175, 55, 0.25)',
-        'gold-glow': '0 0 20px rgba(212, 175, 55, 0.35)',
-        'crimson-glow': '0 0 25px rgba(220, 38, 38, 0.3)',
+        'luxury': '0 8px 32px 0 rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(255, 42, 85, 0.25)',
+        'gold-glow': '0 0 20px rgba(255, 42, 85, 0.35)',
+        'crimson-glow': '0 0 25px rgba(255, 42, 85, 0.35)',
         'inner-felt': 'inset 0 0 45px rgba(0, 0, 0, 0.85)',
       },
       animation: {
         'pulse-subtle': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'float': 'float 3s ease-in-out infinite',
+        'fade-in': 'fadeIn 0.25s ease-out',
+        'message-in': 'messageIn 0.22s ease-out',
+        'spin-slow': 'spin 3s linear infinite',
       },
       keyframes: {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-4px)' },
-        }
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        messageIn: {
+          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        },
       }
     },
   },
