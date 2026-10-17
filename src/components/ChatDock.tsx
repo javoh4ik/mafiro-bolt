@@ -160,7 +160,7 @@ export const ChatDock: React.FC<ChatDockProps> = ({
                     isMyMsg
                       ? isSyndicateMsg
                         ? 'bg-red-800 text-white rounded-tr-none'
-                        : 'bg-blue-600/70 text-white rounded-br-sm'
+                        : 'bg-gradient-to-br from-[#FF2A55]/80 to-[#D91A40]/80 text-white rounded-br-sm'
                       : isSyndicateMsg
                       ? 'bg-red-950/90 border border-red-800/60 text-red-100 rounded-tl-none'
                       : 'bg-white/10 text-white/90 rounded-bl-sm'
@@ -198,7 +198,7 @@ export const ChatDock: React.FC<ChatDockProps> = ({
           type="button"
           onClick={handleSend}
           disabled={isNightCitizen || !inputText.trim() || (!isAlive && phase !== 'last_word')}
-          className="bg-blue-600 hover:bg-blue-500 rounded-xl px-4 py-2.5 text-white flex items-center justify-center transition-colors active:scale-95 disabled:opacity-30"
+          className="bg-gradient-to-r from-[#FF2A55] to-[#D91A40] shadow-lg shadow-[#FF2A55]/25 hover:brightness-110 rounded-xl px-4 py-2.5 text-white flex items-center justify-center transition-all active:scale-95 disabled:opacity-30 disabled:shadow-none disabled:brightness-100"
         >
           <Send className="w-4 h-4" />
         </button>

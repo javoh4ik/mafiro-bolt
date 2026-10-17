@@ -75,17 +75,17 @@ html, body, #root {
   transform: rotateY(180deg);
 }
 
-/* Modern Velvet Table Surface */
+/* Deep Obsidian Table Surface */
 .felt-surface-day {
-  background: radial-gradient(ellipse at center, #11301F 0%, #081811 75%, #040B07 100%);
+  background: radial-gradient(ellipse at center, #0F131C 0%, #07090E 75%, #030406 100%);
 }
 
 .felt-surface-night {
-  background: radial-gradient(ellipse at center, #141D33 0%, #0A101E 75%, #05070D 100%);
+  background: radial-gradient(ellipse at center, #10141F 0%, #06080E 75%, #030406 100%);
 }
 
 .felt-surface-vote {
-  background: radial-gradient(ellipse at center, #2E101A 0%, #17070D 75%, #0C0306 100%);
+  background: radial-gradient(ellipse at center, #160B12 0%, #0A0508 75%, #040203 100%);
 }
 
 /* Clean Matte Obsidian Card Back */

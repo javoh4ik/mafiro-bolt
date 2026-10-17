@@ -46,9 +46,10 @@ export const OvalTable: React.FC<OvalTableProps> = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [reseatToast, setReseatToast] = useState<string | null>(null);
   const totalSeats = Math.max(maxPlayers || 8, players.length, 4);
+  const compact = totalSeats > 10;
 
-  // Precise ellipse seat layout: angle = 2π/N * i - π/2, rx=42%, ry=38%.
-  // Anchored so MY seat sits at the bottom center (angle offset preserves circular order).
+  // Precise ellipse seat layout: angle = 2π/N * i - π/2.
+  // MY seat is anchored at the bottom center; circular order is preserved.
   const { seatCoordinates, playerMap } = useMemo(() => {
     const coords: Record<number, { x: number; y: number }> = {};
     const map: Record<number, PublicPlayer> = {};
@@ -103,29 +104,16 @@ export const OvalTable: React.FC<OvalTableProps> = ({
     setTimeout(() => setCopiedLink(false), 2500);
   };
 
-  // Felt background class according to phase
-  const feltBgClass = useMemo(() => {
+  // Ambient glow tint by phase — surface stays obsidian in every phase
+  const ambientGlow = useMemo(() => {
     switch (phase) {
       case 'night':
-        return 'bg-gradient-to-br from-[#0B1226] via-[#0E1726] to-[#0B1226]';
-      case 'day':
+        return '0 0 40px 8px rgba(99, 102, 241, 0.18)';
       case 'vote':
       case 'last_word':
-        return 'bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-950';
+        return '0 0 40px 8px rgba(255, 42, 85, 0.25)';
       default:
-        return 'bg-gradient-to-br from-emerald-950 via-emerald-900 to-emerald-950';
-    }
-  }, [phase]);
-
-  const feltGlow = useMemo(() => {
-    switch (phase) {
-      case 'night':
-        return '0 0 40px 8px rgba(99, 102, 241, 0.25)';
-      case 'vote':
-      case 'last_word':
-        return '0 0 40px 8px rgba(220, 38, 38, 0.35)';
-      default:
-        return '0 0 40px 8px rgba(220, 38, 38, 0.35)';
+        return '0 0 40px 8px rgba(255, 42, 85, 0.22)';
     }
   }, [phase]);
 
@@ -144,25 +132,25 @@ export const OvalTable: React.FC<OvalTableProps> = ({
         return {
           title: `ДЕНЬ #${dayNumber}`,
           desc: 'Город обсуждает улики',
-          icon: <Sun className="w-4 h-4 text-amber-400 animate-spin-slow" />,
-          color: 'text-amber-300',
-          badgeBorder: 'border-amber-500/40'
+          icon: <Sun className="w-4 h-4 text-[#FF8FA5] animate-spin-slow" />,
+          color: 'text-[#FF8FA5]',
+          badgeBorder: 'border-[#FF2A55]/40'
         };
       case 'vote':
         return {
           title: 'СУД ПРИСЯЖНЫХ',
           desc: 'Выберите подозреваемого',
-          icon: <Scale className="w-4 h-4 text-rose-500 animate-bounce" />,
-          color: 'text-rose-400',
-          badgeBorder: 'border-rose-500/50'
+          icon: <Scale className="w-4 h-4 text-[#FF2A55] animate-bounce" />,
+          color: 'text-[#FF2A55]',
+          badgeBorder: 'border-[#FF2A55]/50'
         };
       case 'last_word':
         return {
           title: 'ПОСЛЕДНЕЕ СЛОВО',
           desc: 'Эшафот',
-          icon: <Skull className="w-4 h-4 text-red-500" />,
-          color: 'text-red-400',
-          badgeBorder: 'border-red-500/60'
+          icon: <Skull className="w-4 h-4 text-[#FF2A55]" />,
+          color: 'text-[#FF2A55]',
+          badgeBorder: 'border-[#FF2A55]/60'
         };
       case 'game_over':
         return {
@@ -194,13 +182,18 @@ export const OvalTable: React.FC<OvalTableProps> = ({
 
   return (
     <div className="relative w-full flex-1 min-h-0 flex items-center justify-center p-2 select-none overflow-hidden">
-      {/* Outer obsidian rim */}
+      {/* Outer obsidian rim with crimson neon border */}
       <div
-        className="relative w-full h-full rounded-[80px] p-2 bg-[#05070B] border-2 border-red-900/60 flex items-center justify-center overflow-hidden"
-        style={{ boxShadow: feltGlow }}
+        className="relative w-full h-full rounded-[80px] p-2 bg-[#05070B] border border-[#FF2A55]/40 shadow-[0_0_30px_rgba(255,42,85,0.15)] flex items-center justify-center overflow-hidden"
+        style={{ boxShadow: `0 0 30px rgba(255,42,85,0.15), ${ambientGlow}` }}
       >
-        {/* Table Felt Surface */}
-        <div className={`relative w-full h-full rounded-[72px] transition-colors duration-700 flex items-center justify-center overflow-visible ${feltBgClass}`}>
+        {/* Deep Obsidian / Midnight Charcoal felt surface */}
+        <div
+          className="relative w-full h-full rounded-[72px] border border-white/[0.06] flex items-center justify-center overflow-visible"
+          style={{
+            background: 'radial-gradient(ellipse at center, #0F131C 0%, #07090E 75%, #030406 100%)',
+          }}
+        >
           {/* Inner felt highlight */}
           <div
             className="absolute inset-0 rounded-[72px] pointer-events-none"
@@ -208,7 +201,7 @@ export const OvalTable: React.FC<OvalTableProps> = ({
           />
           {/* Elegant table label */}
           <div className="absolute top-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-            <span className="font-serif text-[11px] tracking-[0.3em] uppercase text-amber-400/60">
+            <span className="font-serif text-[11px] tracking-[0.3em] uppercase text-[#FF8FA5]/50">
               MAFIRO CLUB
             </span>
           </div>
@@ -250,7 +243,7 @@ export const OvalTable: React.FC<OvalTableProps> = ({
                   <button
                     type="button"
                     onClick={handleInvite}
-                    className="flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold px-5 py-2.5 rounded-xl shadow-lg transition-all duration-200 active:scale-95"
+                    className="flex items-center gap-1.5 bg-gradient-to-r from-[#FF2A55] to-[#D91A40] text-white font-semibold px-4 py-2.5 rounded-xl shadow-lg shadow-[#FF2A55]/25 transition-all duration-200 active:scale-95"
                   >
                     {copiedLink ? <Check className="w-4 h-4" /> : <Link2 className="w-4 h-4" />}
                     <span>{copiedLink ? 'Скопировано!' : 'Пригласить'}</span>
@@ -263,7 +256,7 @@ export const OvalTable: React.FC<OvalTableProps> = ({
                     disabled={players.length < 4}
                     className={`px-4 py-2.5 rounded-xl font-serif font-black text-xs uppercase tracking-wider flex items-center gap-1.5 transition-all active:scale-95 ${
                       players.length >= 4
-                        ? 'bg-gradient-to-r from-[#FF2A55] to-[#A3122F] text-white shadow-gold-glow cursor-pointer'
+                        ? 'bg-gradient-to-r from-[#FF2A55] to-[#D91A40] text-white shadow-lg shadow-[#FF2A55]/25 cursor-pointer'
                         : 'bg-white/10 text-gray-500 cursor-not-allowed border border-white/5'
                     }`}
                   >
@@ -292,6 +285,7 @@ export const OvalTable: React.FC<OvalTableProps> = ({
                 isSelectedTarget={selectedTargetSeat === seatNum}
                 canTarget={canTarget && !!player && player.is_alive && player.seat_number !== mySeatNumber}
                 canReseat={canReseat && !player && seatNum !== mySeatNumber}
+                compact={compact}
                 onSelect={onSelectTarget}
                 onSeatClick={handleSeatClick}
                 xPercent={coord.x}

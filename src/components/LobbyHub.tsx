@@ -164,7 +164,7 @@ export const LobbyHub: React.FC<LobbyHubProps> = ({
                       type="button"
                       onClick={() => handleShareRoom(r.room_id)}
                       title="Скопировать ссылку-приглашение"
-                      className="w-8 h-8 rounded-xl bg-blue-600/20 border border-blue-500/40 hover:bg-blue-600/40 text-blue-300 flex items-center justify-center transition-all active:scale-90"
+                      className="w-8 h-8 rounded-xl bg-[#FF2A55]/15 border border-[#FF2A55]/40 hover:bg-[#FF2A55]/30 text-[#FF8FA5] flex items-center justify-center transition-all active:scale-90"
                     >
                       <Link2 className="w-3.5 h-3.5" />
                     </button>

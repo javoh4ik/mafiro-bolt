@@ -9,6 +9,7 @@ interface PlayerSeatProps {
   isSelectedTarget: boolean;
   canTarget: boolean;
   canReseat: boolean;
+  compact: boolean;
   onSelect: (seatNumber: number) => void;
   onSeatClick: (seatNumber: number) => void;
   xPercent: number;
@@ -23,6 +24,7 @@ export const PlayerSeat: React.FC<PlayerSeatProps> = ({
   isSelectedTarget,
   canTarget,
   canReseat,
+  compact,
   onSelect,
   onSeatClick,
   xPercent,
@@ -46,8 +48,11 @@ export const PlayerSeat: React.FC<PlayerSeatProps> = ({
   };
 
   const clickable = player ? canTarget : canReseat;
+  const avatarSize = compact ? 'w-10 h-10' : 'w-12 h-12';
+  const initialsSize = compact ? 'text-xs' : 'text-sm';
+  const cardWidth = compact ? 'w-[64px]' : 'w-[72px]';
 
-  // ============ EMPTY SEAT ============
+  // ============ EMPTY SEAT: sleek glass ring ============
   if (!player) {
     return (
       <button
@@ -59,19 +64,20 @@ export const PlayerSeat: React.FC<PlayerSeatProps> = ({
           top: `${yPercent}%`,
           transform: 'translate(-50%, -50%)',
         }}
-        className={`absolute z-10 flex flex-col items-center justify-center gap-1 w-16 h-[72px] rounded-2xl border-2 border-dashed border-white/20 bg-white/5 backdrop-blur-sm transition-all duration-200 ${
+        className={`absolute z-10 flex items-center justify-center rounded-full border border-dashed backdrop-blur-sm transition-all duration-200 ${avatarSize} ${
           canReseat
-            ? 'cursor-pointer hover:bg-white/15 hover:border-white/30 hover:scale-105 hover:shadow-[0_0_12px_rgba(34,197,94,0.4)]'
-            : 'cursor-default opacity-70'
+            ? 'border-white/25 bg-white/[0.06] cursor-pointer hover:border-[#FF2A55]/60 hover:bg-white/[0.12] hover:scale-110 hover:shadow-[0_0_16px_rgba(255,42,85,0.35)]'
+            : 'border-white/15 bg-white/[0.03] cursor-default opacity-60'
         }`}
       >
-        <span className={`text-lg leading-none font-bold ${canReseat ? 'text-white/50' : 'text-white/25'}`}>+</span>
-        <span className="text-[9px] font-mono text-white/40">#{seatNumber}</span>
+        <span className={`font-mono font-bold ${compact ? 'text-[10px]' : 'text-xs'} ${canReseat ? 'text-white/50' : 'text-white/30'}`}>
+          +{seatNumber}
+        </span>
       </button>
     );
   }
 
-  // ============ OCCUPIED SEAT ============
+  // ============ OCCUPIED SEAT: cyber-noir glass card ============
   return (
     <div
       onClick={handleClick}
@@ -80,7 +86,7 @@ export const PlayerSeat: React.FC<PlayerSeatProps> = ({
         top: `${yPercent}%`,
         transform: 'translate(-50%, -50%)',
       }}
-      className={`absolute z-20 flex flex-col items-center w-[72px] rounded-2xl transition-all duration-200 ${
+      className={`absolute z-20 flex flex-col items-center ${cardWidth} transition-all duration-200 ${
         clickable ? 'cursor-pointer active:scale-95' : ''
       }`}
     >
@@ -94,24 +100,24 @@ export const PlayerSeat: React.FC<PlayerSeatProps> = ({
         </div>
       )}
 
-      {/* Seat Card: avatar + name */}
+      {/* Glass card */}
       <div
-        className={`relative w-full flex flex-col items-center gap-1 py-2 rounded-2xl bg-white/[0.08] backdrop-blur-md border transition-all duration-200 ${
+        className={`relative w-full flex flex-col items-center gap-1 py-2 rounded-2xl bg-white/[0.07] backdrop-blur-md border transition-all duration-200 ${
           isSelectedTarget
-            ? 'border-red-500/80 shadow-[0_0_16px_rgba(220,38,38,0.5)] scale-105'
+            ? 'border-[#FF2A55] shadow-[0_0_18px_rgba(255,42,85,0.5)] scale-105'
             : isMe
-            ? 'border-amber-400/70 shadow-[0_0_16px_rgba(251,191,36,0.4)]'
+            ? 'border-[#FF2A55]/70 shadow-[0_0_14px_rgba(255,42,85,0.35)]'
             : 'border-white/15'
         }`}
       >
         {/* Seat number badge */}
-        <div className="absolute -top-1.5 -left-1.5 z-20 px-1.5 py-0.5 rounded-full bg-black/40 border border-white/10 font-mono text-[9px] font-bold text-white/60">
+        <div className="absolute -top-1.5 -left-1.5 z-20 px-1.5 py-0.5 rounded-full bg-black/50 border border-white/10 font-mono text-[9px] font-bold text-white/60">
           #{seatNumber}
         </div>
 
         {/* Votes pill */}
         {player.votes_received > 0 && (
-          <div className="absolute -bottom-1 -right-1 z-20 px-1.5 py-0.5 rounded-full bg-red-950 border border-red-500 text-red-200 font-mono text-[9px] font-bold">
+          <div className="absolute -bottom-1 -right-1 z-20 px-1.5 py-0.5 rounded-full bg-[#3A0A14] border border-[#FF2A55]/70 text-[#FF8FA5] font-mono text-[9px] font-bold shadow-[0_0_10px_rgba(255,42,85,0.4)]">
             +{player.votes_received}
           </div>
         )}
@@ -123,17 +129,44 @@ export const PlayerSeat: React.FC<PlayerSeatProps> = ({
           </div>
         )}
 
-        {/* Gradient initials avatar */}
+        {/* Cyber-Noir Avatar: dark glass circle + gradient initial + glowing status ring */}
         <div
-          className={`w-12 h-12 rounded-full flex items-center justify-center ring-2 ring-white/20 ${!player.is_alive ? 'opacity-40 grayscale' : ''}`}
+          className={`relative ${avatarSize} rounded-full p-[2px] transition-shadow duration-200`}
           style={{
-            background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
-            boxShadow: `0 0 12px ${gradient.glow}`,
+            background: 'rgba(255,255,255,0.08)',
+            boxShadow: player.is_alive && (player.is_speaking || isMe)
+              ? `0 0 14px ${gradient.glow}, inset 0 0 0 1px rgba(255,255,255,0.12)`
+              : 'inset 0 0 0 1px rgba(255,255,255,0.12)',
           }}
         >
-          <span className="text-sm font-bold text-white tracking-wide drop-shadow">
-            {getInitials(player.first_name)}
-          </span>
+          <div
+            className={`w-full h-full rounded-full flex items-center justify-center ${!player.is_alive ? 'opacity-40 grayscale' : ''}`}
+            style={{
+              background: `linear-gradient(135deg, ${gradient.from}33, ${gradient.to}66), #0A0E17`,
+            }}
+          >
+            <span
+              className={`${initialsSize} font-black tracking-wide`}
+              style={{
+                background: `linear-gradient(135deg, ${gradient.from}, ${gradient.to})`,
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                filter: `drop-shadow(0 0 6px ${gradient.glow})`,
+              }}
+            >
+              {getInitials(player.first_name)}
+            </span>
+          </div>
+
+          {/* Glowing status dot */}
+          {player.is_alive && (
+            <span
+              className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[#0A0E17] ${player.is_speaking ? 'animate-pulse' : ''}`}
+              style={{ background: gradient.from, boxShadow: `0 0 6px ${gradient.glow}` }}
+            />
+          )}
+
+          {/* Dead overlay */}
           {!player.is_alive && (
             <div className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center">
               <span className="text-sm">☠️</span>
@@ -142,7 +175,7 @@ export const PlayerSeat: React.FC<PlayerSeatProps> = ({
         </div>
 
         {/* Name */}
-        <span className={`text-[10px] font-medium max-w-full truncate px-1 ${isMe ? 'text-amber-300' : 'text-white/90'}`}>
+        <span className={`text-[10px] font-medium max-w-full truncate px-1 ${isMe ? 'text-[#FF8FA5]' : 'text-white/90'}`}>
           {displayName}
         </span>
       </div>
